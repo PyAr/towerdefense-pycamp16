@@ -1,13 +1,11 @@
 import random
-
-def jugar(towers):
-    return random.choice(range(-50, 51))
+from core import start
 
 # [{(0, 1): TorreBlah(), (0, 2): TorreFoo(), ...}, ...]
 def weighted_random_values(tower_dicts, n_elements = 2):
     values = []
     for towers in tower_dicts:
-      values.append((towers, jugar(towers)))
+      values.append((towers, start(towers)))
 
     only_values = [ value[1] for value in values ]
     max_value = max(only_values)
