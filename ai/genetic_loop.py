@@ -1,6 +1,7 @@
 from weighted_random import weighted_random_values
 from core import get_available_locations, get_tower_types, start
 import random
+import sys
 
 
 def add_game_values(games):
@@ -98,6 +99,8 @@ class Genetic:
         iterations = 0
         current_games = add_game_values(initial_games)
         while True:
+            print('.', end='')
+            sys.stdout.flush()
             if save_generations_to:
                 self.save_generation(current_games)
 
