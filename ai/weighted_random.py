@@ -23,7 +23,7 @@ def weighted_random_values(tower_dicts_with_values, n_elements=2):
     possible_results = []
     for towers, value in tower_dicts_with_values:
         for _ in range(weight):
-            possible_results.append((towers, value))
+            possible_results.append(towers)
         weight -= int(abs(value/len(tower_dicts_with_values)))
         if weight <= 0:
             weight = 1
