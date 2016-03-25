@@ -48,8 +48,15 @@ class Genetic:
         return coord
 
     def build_valid_child(self, towers):
-        # TODO fix repeated towers
-        return dict(towers)
+        child = {}
+        for position, tower_type in towers:
+            if position in child:
+                position = self.change_coord(position, list(child.keys()))
+            child[position] = tower_type
+
+        assert len(child) == len(towers)
+
+        return child
 
     def crossover(self, game1, game2):
         child1 = {}
