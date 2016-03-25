@@ -25,11 +25,14 @@ class Tower:
             return
 
         targets = self._select_targets(monsters)
+
         # shoot
         for t in targets:
             self._damage(t)
 
-        self.current_cooldown = self.cooldown
+        #if there is targets to shoot, active cooldown
+        if targets:
+            self.current_cooldown = self.cooldown
 
     def pre_shoot(self):
         if self.current_cooldown == 0:
@@ -52,7 +55,7 @@ class Tower:
 
 
 class Indecisa(Tower):
-    def _select_target(self, monsters):
+    def _select_targets(self, monsters):
         """
         return a list of targets by sampling
         """
@@ -78,16 +81,97 @@ class Chiflete(Tower):
         monster.affect(damage=self.strength, freeze=5)
 
 
-class Fresquete(Tower):
-    def __init__(self, position, shooting_range=20, strength=400, cooldown=2):
+class FresqueteVertical(Chiflete):
+    def __init__(self, position, shooting_range=1000, strength=0, cooldown=0):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
+    def _select_targets(self, monsters):
+        targets = []
+        for (monster, distancia) in monsters:
+            if monster.position[0] == self.position[0]:
+                targets.append(monster)
+        return targets
 
-class Zika(Tower):
-    def __init__(self, position, shooting_range=20, strength=400, cooldown=2):
+
+class FresqueteHorizontal(FresqueteVertical):
+    def _select_targets(self, monsters):
+        targets = []
+        for (monster, distancia) in monsters:
+            if monster.position[1] == self.position[1]:
+                targets.append(monster)
+        return targets
+
+
+class Zika(Indecisa):
+    def __init__(self, position, shooting_range=30, strength=25, cooldown=3):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
+
+    def _damage(self, monster):
+        monster.affect(damage=self.strength, poison=4)
+
+
+class Camper(Tower):
+    def __init__(self, position, shooting_range=90, strength=800, cooldown=15):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+    def _select_targets(self, monsters):
+        monsters = sorted(monsters, key=lambda x: -x[0].position[1])
+        return monsters[0]
+
+
+class Cagona(Tower):
+    def __init__(self, position, shooting_range=100, strength=800, cooldown=7):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def _select_targets(self, monsters):
+        for d in monsters[1]:
+            if d <= 30:
+                return []
+        monsters = sorted(monsters, key=lambda x: -x[0].position[1])
+        return monsters[0]
+
+
+class CamperDoble(Tower):
+    def __init__(self, position, shooting_range=90, strength=400, cooldown=20):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def _select_targets(self, monsters):
+        monsters = sorted(monsters, key=lambda x: -x[0].position[1])
+        return monsters[:2]
+
+
+class TormentaFogosa(Tower):
+    def __init__(self, position, shooting_range=30, strength=10, cooldown=0):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def _select_targets(self, monsters):
+        return [x[0] for x in monsters]
+
+class Troll(Tower):
+    def __init__(self, position, shooting_range=30, strength=0, cooldown=2):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def _damage(self, monster):
+        monster.affect(damage=self.strength, rage=5)
+
+
+class MiniGun(Tower):
+    def __init__(self, position, shooting_range=30, strength=100, cooldown=7):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def pre_shoot(self):
+        if self.current_cooldown == 0:
+            return False
+        else:
+            self.current_cooldown -= 1
+            return True
 
 
 towers_dic = {
@@ -95,6 +179,13 @@ towers_dic = {
     "Indecisa": Indecisa,
     "Bully": Bully,
     "Chiflete": Chiflete,
-    "Fresquete": Fresquete,
-    "Zika": Zika
+    "Fresquete Vertical": FresqueteVertical,
+    "Fresquete Horizontal": FresqueteHorizontal,
+    "Zika": Zika,
+    "Camper": Camper,
+    "Cagona": Cagona,
+    "Camper Doble": CamperDoble,
+    "Tormenta Fogosa": TormentaFogosa,
+    "Troll": Troll,
+    "MiniGun": MiniGun,
 }
