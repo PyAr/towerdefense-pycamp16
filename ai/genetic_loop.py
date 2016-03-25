@@ -48,6 +48,10 @@ class Genetic:
         iterations = 0
         current_games = add_game_values(initial_games)
         while True:
+
+            if iterations == max_iterations:
+                return current_games
+
             childs = []
             for _ in range(n_games / 2):
                 chosen_parents = weighted_random_values(current_games, 2)
@@ -59,9 +63,6 @@ class Genetic:
 
             current_games = add_game_values(childs)
             iterations += 1
-
-            if iterations == max_iterations:
-                return current_games
 
 
 if __name__ == '__main__':
