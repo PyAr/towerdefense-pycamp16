@@ -1,5 +1,9 @@
 
-from . import towers, field, reactor
+from . import towers, reactor
+from .field import Field
+
+# some use-only-once instances
+field = Field()
 
 
 def get_available_locations():

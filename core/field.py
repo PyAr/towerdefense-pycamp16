@@ -31,7 +31,7 @@ class Field:
 
     WIDHT = 100
     HEIGHT = 100
-    SECTION  = 20
+    SECTION = 20
 
     def __init__(self):
         self.board = self._load_map(BOARD)
@@ -49,7 +49,6 @@ class Field:
         path = []
         for start, stop in zip(vertices, vertices[1:]):
             path.extend(self._generate_segment_list(start, stop))
-        path.append(vertices[-1])
         return path
 
     def _generate_segment_list(self, start, stop):
@@ -76,26 +75,18 @@ class Field:
                 next_position = self.path[next_index]
                 monster.position = next_position
             except IndexError:
-                monster.position = (101, 51)  # go outside
+                monster.position = VERTICES[-1]  # go outside
                 monsters_outside.append(monster)
         return monsters_outside
 
     def get_tower_locations(self):
-        """
-        returns an iterable of tower locations as tuble (x, y)
-        """
+        """Return an iterable of tower locations as tuble (x, y)."""
         return self.towers
 
     def get_monster_entrance(self):
-        """
-        returns a monster entrance as a tuble (x, y)
-        """
+        """Return a monster entrance as a tuble (x, y)."""
         return self.path[0]
 
     def get_board(self):
-        """
-        returns a matrix:
-            - G means grass
-            - L means land
-        """
+        """Return a matrix, with G meaning grass and L land."""
         return self.board

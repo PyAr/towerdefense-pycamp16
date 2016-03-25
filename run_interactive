@@ -1,0 +1,3 @@
+#!/bin/sh
+
+fades -r requirements.txt main.py
