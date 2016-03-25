@@ -144,7 +144,7 @@ class CamperDoble(Tower):
         return monsters[:2]
 
 
-class ElNiñoFogoso(Tower):
+class TormentaFogosa(Tower):
     def __init__(self, position, shooting_range=30, strength=10, cooldown=0):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
@@ -156,7 +156,7 @@ class Troll(Tower):
     def __init__(self, position, shooting_range=30, strength=0, cooldown=2):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
-    #The rage mechanic is not reliable, too OP
+
     def _damage(self, monster):
         monster.affect(damage=self.strength, rage=5)
 
@@ -185,7 +185,7 @@ towers_dic = {
     "Camper": Camper,
     "Cagona": Cagona,
     "Camper Doble": CamperDoble,
-    "El niño Fogoso": ElNiñoFogoso,
+    "Tormenta Fogosa": TormentaFogosa,
     "Troll": Troll,
     "MiniGun": MiniGun,
 }
