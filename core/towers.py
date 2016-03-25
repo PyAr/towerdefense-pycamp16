@@ -59,11 +59,7 @@ class Indecisa(Tower):
         """
         return a list of targets by sampling
         """
-        targets = [random.choice(monsters)]
-        monsters.remove(target1)
-        if monsters:
-            targets.append(random.choice(monsters))
-        return targets
+        return [x[0] for x in random.sample(monsters, 2)]
 
 
 class Bully(Tower):
@@ -141,7 +137,7 @@ class CamperDoble(Tower):
 
     def _select_targets(self, monsters):
         monsters = sorted(monsters, key=lambda x: -x[0].position[1])
-        return monsters[:2]
+        return [x[0] for x in monsters[:2]]
 
 
 class TormentaFogosa(Tower):
@@ -195,7 +191,7 @@ class Comunista(Tower):
     monsters = [x[0] for x in monsters]
 
     def _select_targets(self, monsters):
-        return monsters
+        return [x[0] for x in monsters]
 
     def _damage(self, monsters):
         monster.affect(damage=self.strength/len(monsters))
