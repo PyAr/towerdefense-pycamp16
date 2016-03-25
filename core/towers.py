@@ -31,7 +31,7 @@ class Tower:
 
         self.current_cooldown = self.cooldown
 
-    def pre_shoot(self, cooldown):
+    def pre_shoot(self):
         if self.current_cooldown == 0:
             return True
         else:
@@ -78,16 +78,49 @@ class Chiflete(Tower):
         monster.affect(damage=self.strength, freeze=5)
 
 
-class Fresquete(Tower):
-    def __init__(self, position, shooting_range=20, strength=400, cooldown=2):
+class FresqueteVertical(Chiflete):
+    def __init__(self, position, shooting_range=1000, strength=0, cooldown=0):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
+    def _select_targets(self, monsters):
+        targets = []
+        for (monster, distancia) in monsters:
+            if monster.position[0] == self.position[0]:
+                targets.append(monster)
+        return targets
 
-class Zika(Tower):
-    def __init__(self, position, shooting_range=20, strength=400, cooldown=2):
+
+class FresqueteHorizontal(FresqueteVertical):
+    def _select_targets(self, monsters):
+        targets = []
+        for (monster, distancia) in monsters:
+            if monster.position[1] == self.position[1]:
+                targets.append(monster)
+        return targets
+
+
+class Zika(Indecisa):
+    def __init__(self, position, shooting_range=30, strength=25, cooldown=3):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
+
+    def _damage(self, monster):
+        monster.affect(damage=self.strength, poison=4)
+
+class Camper(Indecisa):
+    def __init__(self, position, shooting_range=90, strength=800, cooldown=15):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+        #agragar feature para que dispare al mas cercano a la llegada
+
+
+
+class ElNiño(Tower):
+    def __init__(self, position, shooting_range=90, strength=50, cooldown=00):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
 
 
 towers_dic = {
@@ -95,6 +128,8 @@ towers_dic = {
     "Indecisa": Indecisa,
     "Bully": Bully,
     "Chiflete": Chiflete,
-    "Fresquete": Fresquete,
-    "Zika": Zika
+    "FresqueteVertical": FresqueteVertical,
+    "FresqueteHorizontal": FresqueteHorizontal,
+    "Zika": Zika,
+    "Camper": Camper,
 }
