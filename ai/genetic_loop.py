@@ -30,8 +30,8 @@ def genetic_loop(
     while True:
         childs = []
         for _ in range(n_games / 2):
-            best_games = weighted_random_values(current_games, 2)
-            for child in procrear(best_games):
+            chosen_parents = weighted_random_values(current_games, 2)
+            for child in procrear(chosen_parents):
                 childs.append(child)
 
         next_games = []
