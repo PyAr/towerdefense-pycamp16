@@ -59,7 +59,7 @@ class Genetic:
                 return current_games
 
             childs = []
-            for _ in range(n_games / 2):
+            for _ in range(int(n_games / 2)):
                 chosen_parents = weighted_random_values(current_games, 2)
                 for child in self.crossover(*chosen_parents):
                     if random.random() <= mutation_factor:
