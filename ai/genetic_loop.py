@@ -4,14 +4,15 @@ from mute import mutacion
 from core import get_available_locations, get_tower_types, start
 import random
 
+
 def genetic_loop(
         initial_games,
-        possible_positions = [],
-        possible_towers = [],
-        mutation_factor = 0.1,
-        n_games = 10,
-        cut_value = 0,
-        max_iterations = 10000):
+        possible_positions=[],
+        possible_towers=[],
+        mutation_factor=0.1,
+        n_games=10,
+        cut_value=0,
+        max_iterations=10000):
 
     if n_games % 2 != 0:
         raise Exception("n_games tiene que ser par")
@@ -33,12 +34,13 @@ def genetic_loop(
         current_games = []
         for child in childs:
             if random.random() <= mutation_factor:
-                current_games.append(mutacion(child, possible_positions, possible_towers))
+                current_games.append(mutacion(child, possible_positions,
+                                              possible_towers))
             else:
                 current_games.append(child)
 
-        if any([ x[1] == cut_value for x in best_games ]):
-            best_game = [ x for x in best_games if x[1] == cut_value ][0]
+        if any([x[1] == cut_value for x in best_games]):
+            best_game = [x for x in best_games if x[1] == cut_value][0]
             print("Best game is: %s" % best_game)
             break
 

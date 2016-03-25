@@ -1,8 +1,11 @@
 import random
 
-# [{(0, 1): TorreBlah(), (0, 2): TorreFoo(), ...}, ...]
-def weighted_random_values(tower_dicts_with_values, n_elements = 2):
-    only_values = [ value[1] for value in tower_dicts_with_values ]
+
+def weighted_random_values(tower_dicts_with_values, n_elements=2):
+    """
+    Espera [({(0, 1): TorreBlah(), (0, 2): TorreFoo(), ...}, valor), ...]
+    """
+    only_values = [value[1] for value in tower_dicts_with_values]
     max_value = max(only_values)
     min_value = min(only_values)
 
@@ -15,7 +18,7 @@ def weighted_random_values(tower_dicts_with_values, n_elements = 2):
         weight = 1
 
     tower_dicts_with_values = sorted(tower_dicts_with_values,
-                                     key = lambda value: value[1], reverse = True)
+                                     key=lambda value: value[1], reverse=True)
 
     possible_results = []
     for towers, value in tower_dicts_with_values:
