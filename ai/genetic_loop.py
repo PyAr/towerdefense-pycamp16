@@ -1,7 +1,7 @@
 from weighted_random import weighted_random_values
 from procrear import procrear
 from mute import mutacion
-from core import get_available_locations, get_tower_types
+from core import get_available_locations, get_tower_types, start
 import random
 
 def genetic_loop(
@@ -17,19 +17,25 @@ def genetic_loop(
         raise Exception("n_games tiene que ser par")
 
     iterations = 0
+    current_games = initial_games
     while True:
+
+        values = []
+        for towers in current_games:
+            values.append((towers, start(towers)))
+
         childs = []
         for _ in range(n_games / 2):
-            best_games = weighted_random_values(initial_games, 2)
+            best_games = weighted_random_values(values, 2)
             for child in procrear(best_games):
                 childs.append(child)
 
-        initial_games = []
+        current_games = []
         for child in childs:
             if random.random() <= mutation_factor:
-                initial_games.append(mutacion(child, possible_positions, possible_towers))
+                current_games.append(mutacion(child, possible_positions, possible_towers))
             else:
-                initial_games.append(child)
+                current_games.append(child)
 
         if any([ x[1] == cut_value for x in best_games ]):
             best_game = [ x for x in best_games if x[1] == cut_value ][0]
@@ -40,7 +46,7 @@ def genetic_loop(
 
         if iterations == max_iterations:
             print("Excedido de las iteraciones maximas")
-            print("Juegos actuales: %s" % initial_games)
+            print("Juegos actuales: %s" % current_games)
             break
 
 
