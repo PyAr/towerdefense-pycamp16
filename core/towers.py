@@ -25,11 +25,14 @@ class Tower:
             return
 
         targets = self._select_targets(monsters)
+
         # shoot
         for t in targets:
             self._damage(t)
 
-        self.current_cooldown = self.cooldown
+        #if there is targets to shoot, active cooldown
+        if targets:
+            self.current_cooldown = self.cooldown
 
     def pre_shoot(self):
         if self.current_cooldown == 0:
@@ -52,7 +55,7 @@ class Tower:
 
 
 class Indecisa(Tower):
-    def _select_target(self, monsters):
+    def _select_targets(self, monsters):
         """
         return a list of targets by sampling
         """
@@ -108,19 +111,67 @@ class Zika(Indecisa):
     def _damage(self, monster):
         monster.affect(damage=self.strength, poison=4)
 
-class Camper(Indecisa):
+
+class Camper(Tower):
     def __init__(self, position, shooting_range=90, strength=800, cooldown=15):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
-        #agragar feature para que dispare al mas cercano a la llegada
+    def _select_targets(self, monsters):
+        monsters = sorted(monsters, key=lambda x: -x[0].position[1])
+        return monsters[0]
 
 
-
-class ElNiño(Tower):
-    def __init__(self, position, shooting_range=90, strength=50, cooldown=00):
+class Cagona(Tower):
+    def __init__(self, position, shooting_range=100, strength=800, cooldown=7):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
+    def _select_targets(self, monsters):
+        for d in monsters[1]:
+            if d <= 30:
+                return []
+        monsters = sorted(monsters, key=lambda x: -x[0].position[1])
+        return monsters[0]
+
+
+class CamperDoble(Tower):
+    def __init__(self, position, shooting_range=90, strength=400, cooldown=20):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def _select_targets(self, monsters):
+        monsters = sorted(monsters, key=lambda x: -x[0].position[1])
+        return monsters[:2]
+
+
+class ElNiñoFogoso(Tower):
+    def __init__(self, position, shooting_range=30, strength=10, cooldown=0):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def _select_targets(self, monsters):
+        return [x[0] for x in monsters]
+
+class Troll(Tower):
+    def __init__(self, position, shooting_range=30, strength=0, cooldown=2):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+    #The rage mechanic is not reliable, too OP
+    def _damage(self, monster):
+        monster.affect(damage=self.strength, rage=5)
+
+
+class MiniGun(Tower):
+    def __init__(self, position, shooting_range=30, strength=100, cooldown=7):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    def pre_shoot(self):
+        if self.current_cooldown == 0:
+            return False
+        else:
+            self.current_cooldown -= 1
+            return True
 
 
 towers_dic = {
@@ -128,8 +179,13 @@ towers_dic = {
     "Indecisa": Indecisa,
     "Bully": Bully,
     "Chiflete": Chiflete,
-    "FresqueteVertical": FresqueteVertical,
-    "FresqueteHorizontal": FresqueteHorizontal,
+    "Fresquete Vertical": FresqueteVertical,
+    "Fresquete Horizontal": FresqueteHorizontal,
     "Zika": Zika,
     "Camper": Camper,
+    "Cagona": Cagona,
+    "Camper Doble": CamperDoble,
+    "El niño Fogoso": ElNiñoFogoso,
+    "Troll": Troll,
+    "MiniGun": MiniGun,
 }
