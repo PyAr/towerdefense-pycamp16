@@ -182,20 +182,21 @@ class Patovica(Bully):
     def _damage(self, monster):
         monster.affect(damage=self.strength, freeze=1)
 
-
+"""
 class Comunista(Tower):
     def __init__(self, position, shooting_range=39, strength=1000, cooldown=5):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
-    monsters = [x[0] for x in monsters]
+    monsters =[]
 
     def _select_targets(self, monsters):
-        return [x[0] for x in monsters]
+        monsters = [x[0] for x in monsters]
+        return monsters
 
     def _damage(self, monsters):
         monster.affect(damage=self.strength/len(monsters))
-
+"""
 
 
 
@@ -214,7 +215,7 @@ towers_dic = {
     "Tormenta Fogosa": TormentaFogosa,
     "Troll": Troll,
     "MiniGun": MiniGun,
-    "Pecho Frío": PechoFrio,
+    "Pecho Frio": PechoFrio,
     "Patovica": Patovica,
-    "Comunista": Comunista,
+    #"Comunista": Comunista,
 }
