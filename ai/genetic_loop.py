@@ -32,7 +32,7 @@ class Genetic:
         towers.extend(game2.items())
 
         random.shuffle(towers)
-        half = len(towers) / 2
+        half = int(len(towers) / 2)
 
         child1 = self.build_valid_child(towers[:half])
         child2 = self.build_valid_child(towers[half:])
