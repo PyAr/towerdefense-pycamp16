@@ -1,5 +1,5 @@
 
-from . import tower, field, reactor
+from . import towers, field, reactor
 
 
 def get_available_locations():
@@ -9,7 +9,7 @@ def get_available_locations():
 
 def get_tower_types():
     """Return the list of possible tower types for the IA to push."""
-    return tower.get_kinds()
+    return towers.get_kinds()
 
 
 def start(bootstrap_info, drawing=False):
