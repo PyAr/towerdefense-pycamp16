@@ -31,9 +31,9 @@ class Field:
             matrix.append(list(line))
         return matrix
 
-    def move(bugs):
+    def move(self, monsters):
         """
-        params: bugs must be an iterable
+        params: monsters must be an iterable
         return: an iterable of monster outside of map
         """
         return ()
@@ -53,7 +53,7 @@ class Field:
     def get_board(self):
         """
         returns a matrix:
-            - zero means grass
-            - one means land
+            - G means grass
+            - L means land
         """
-        return [[]]
+        return self.board
