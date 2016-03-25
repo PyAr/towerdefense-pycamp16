@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Tota game runner.
+"""Genetic experiment runner.
 
 Usage:
     ./runner.py --help
-    ./runner.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME]
+    ./runner.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME] [-e ELITE_GAMES]
 
 Options:
     -h --help            Show this help.
@@ -12,6 +12,7 @@ Options:
     -m MUTATION_FACTOR   The probability (0-1) of a child mutation at birth.
     -f GENERATIONS_FILE  File to save the generations data.
     -t TOWERS_PER_GAME   The number of towers to place in each game.
+    -e ELITE_GAMES       The number of elite games that survive generations.
 """
 from docopt import docopt
 
@@ -34,6 +35,7 @@ def run():
         n_games=pop_size,
         max_iterations=generations,
         save_generations_to=arguments['-f'],
+        elite_games_count=arguments['-e'],
     )
     print(last_generation)
 
