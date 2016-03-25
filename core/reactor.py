@@ -6,6 +6,9 @@ BOARD_LENGTH = 100
 TOTAL_REACTOR_LOOPS = 160 * 5   # 5 x path length
 TOTAL_MONSTERS = 100
 
+# too many things depends on this invariant
+assert TOTAL_MONSTERS < TOTAL_REACTOR_LOOPS
+
 
 class Drawer:
     """A drawer. Or not."""
@@ -35,7 +38,7 @@ def go(bootstrap_info, drawing=False):
     field_board = field.get_board()
     drawer.draw_field(field_board, game_towers)
 
-    score = 0  # negative, every time a monster finished, +1
+    score = TOTAL_MONSTERS  # every time a monster finished, -1
     monsters = []
     remaining_monsters = TOTAL_MONSTERS
     initial_monster_position = field.get_monster_entrance()
@@ -66,7 +69,7 @@ def go(bootstrap_info, drawing=False):
         drawer.draw(monsters, score)
 
         # remove the fallen monsters (and update the score, they finished!!)
-        score += len(fallen)
+        score -= len(fallen)
         for m in fallen:
             monsters.remove(m)
 

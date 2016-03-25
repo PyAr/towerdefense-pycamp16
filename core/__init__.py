@@ -18,6 +18,6 @@ def start(bootstrap_info, drawing=False):
 
     Receive a dict with positions as keys, and tower type as values.
 
-    Return a score.
+    Return a score, a positive number, the greater the better.
     """
     return reactor.go(bootstrap_info, drawing)

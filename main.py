@@ -4,16 +4,21 @@ import time
 
 import core
 
+QUANT = 7
+
 locations = core.get_available_locations()
-r_loc = random.choice(locations)
+random.shuffle(locations)
+r_loc = locations[:QUANT]
 
 kinds = core.get_tower_types()
-r_kind = random.choice(kinds)
+random.shuffle(kinds)
+r_kind = kinds[:QUANT]
 
-test = {r_loc: r_kind}
+test = {l: k for l, k in zip(r_loc, r_kind)}
+
 
 tini = time.time()
-score = core.start(test, drawing=True)
+score = core.start(test, drawing=False)
 delta = time.time() - tini
-print("Finished! Score: {} (took {:.3f})".format(score, delta))
+print("Finished for {} quant! Score: {} (took {:.3f})".format(QUANT, score, delta))
 input("Press any key to continue")
