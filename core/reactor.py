@@ -1,5 +1,5 @@
 
-from . import tower, field, monster, painter
+from . import towers, field, monster, painter
 
 BOARD_LENGTH = 100
 TOTAL_REACTOR_LOOPS = 160 * 5   # 5 x path length
@@ -9,9 +9,9 @@ TOTAL_MONSTERS = 100
 def go(bootstrap_info, drawing):
     """Receive a dict with positions as keys, and tower type as values, return the score."""
     # bootstrap, set up the towers
-    towers = [tower.get_tower(pos, kind) for pos, kind in bootstrap_info.items()]
+    game_towers = [towers.get_tower(pos, kind) for pos, kind in bootstrap_info.items()]
     field_board = field.get_board()
-    painter.draw_field(field_board, towers)
+    painter.draw_field(field_board, game_towers)
 
     score = 0  # negative, every time a monster finished, +1
     monsters = []
