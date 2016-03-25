@@ -13,7 +13,7 @@ def get_tower(position, kind):
 class Tower:
     """Basic tower."""
 
-    def __init__(self, position, shooting_range=35, strength=200, cooldown=4):
+    def __init__(self, position, shooting_range=35, strength=400, cooldown=4):
         self.shooting_range = shooting_range
         self.strength = strength
         self.position = position
@@ -24,6 +24,7 @@ class Tower:
         if len(monsters)==0:
             return
 
+        print(self.__class__.__name__)
         targets = self._select_targets(monsters)
 
         # shoot
@@ -59,7 +60,10 @@ class Indecisa(Tower):
         """
         return a list of targets by sampling
         """
-        return [x[0] for x in random.sample(monsters, 2)]
+        try:
+            return [x[0] for x in random.sample(monsters, 2)]
+        except ValueError:
+            return [x[0] for x in random.sample(monsters, 1)]
 
 
 class Bully(Tower):
@@ -112,22 +116,24 @@ class Camper(Tower):
     def __init__(self, position, shooting_range=85, strength=800, cooldown=15):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
+
     def _select_targets(self, monsters):
         monsters = sorted(monsters, key=lambda x: -x[0].position[1])
-        return monsters[0]
+        return [monsters[0][0]]
 
 
 class Cagona(Tower):
     def __init__(self, position, shooting_range=85, strength=800, cooldown=7):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
+        self._min_distance = 30
 
     def _select_targets(self, monsters):
-        for d in monsters[1]:
-            if d <= 30:
+        for m, dist in monsters:
+            if dist <= self._min_distance:
                 return []
         monsters = sorted(monsters, key=lambda x: -x[0].position[1])
-        return monsters[0]
+        return [monsters[0][0]]
 
 
 class CamperDoble(Tower):
@@ -182,23 +188,22 @@ class Patovica(Bully):
     def _damage(self, monster):
         monster.affect(damage=self.strength, freeze=1)
 
-"""
+
 class Comunista(Tower):
     def __init__(self, position, shooting_range=39, strength=1000, cooldown=5):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
-
-    monsters =[]
+        self._monsters_seen = 0
 
     def _select_targets(self, monsters):
-        monsters = [x[0] for x in monsters]
-        return monsters
+        self._monsters_seen = 0
+        targets = [x[0] for x in monsters]
+        self._monsters_seen = len(targets)
+        return targets
 
-    def _damage(self, monsters):
-        monster.affect(damage=self.strength/len(monsters))
-"""
-
-
+    def _damage(self, monster):
+        damage = self.strength / self._monsters_seen
+        monster.affect(damage=damage)
 
 
 towers_dic = {
@@ -217,5 +222,5 @@ towers_dic = {
     "MiniGun": MiniGun,
     "Pecho Frio": PechoFrio,
     "Patovica": Patovica,
-    #"Comunista": Comunista,
+    "Comunista": Comunista,
 }
