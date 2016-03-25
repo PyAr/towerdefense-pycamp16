@@ -24,7 +24,6 @@ class Tower:
         if len(monsters)==0:
             return
 
-        print(self.__class__.__name__)
         targets = self._select_targets(monsters)
 
         # shoot
