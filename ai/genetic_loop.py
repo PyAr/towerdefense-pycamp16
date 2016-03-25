@@ -87,8 +87,8 @@ class Genetic:
         return [self.random_game(towers_size)
                 for _ in range(population_size)]
 
-    def loop(self, initial_games, mutation_factor, n_games,
-             max_iterations, save_generations_to=None):
+    def loop(self, initial_games, mutation_factor, n_games, max_iterations,
+             save_generations_to=None, elite_games_count=None):
 
         if save_generations_to:
             self.prepare_generations_file(save_generations_to)
@@ -98,6 +98,7 @@ class Genetic:
 
         iterations = 0
         current_games = add_game_values(initial_games)
+        elite_games = []
         while True:
             print('.', end='')
             sys.stdout.flush()
@@ -109,14 +110,21 @@ class Genetic:
 
             childs = []
             for _ in range(int(n_games / 2)):
-                chosen_parents = weighted_random_values(current_games, 2)
+                chosen_parents = weighted_random_values(current_games + elite_games, 2)
                 for child in self.crossover(*chosen_parents):
                     if random.random() <= mutation_factor:
                         child = self.mutate(child)
 
                     childs.append(child)
 
-            current_games = add_game_values(childs)
+            childs = add_game_values(childs)
+
+            best_of_all_games = sorted(current_games + childs + elite_games,
+                                       key=lambda t: t[1])
+            if elite_games_count:
+                elite_games = list(best_of_all_games)[-elite_games_count:]
+
+            current_games = childs
             iterations += 1
 
     def prepare_generations_file(self, generations_file_name):
