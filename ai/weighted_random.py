@@ -28,8 +28,6 @@ def weighted_random_values(tower_dicts_with_values, n_elements=2):
         if weight <= 0:
             weight = 1
 
-    print(possible_results)
-
     results = []
     for _ in range(n_elements):
         choice = random.choice(possible_results)
