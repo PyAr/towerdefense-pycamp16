@@ -2,14 +2,17 @@ from weighted_random import weighted_random_values
 from core import get_available_locations, get_tower_types, start
 import random
 import sys
+from multiprocessing import Pool, cpu_count
 
+
+
+def play(game):
+    return game, start(game)
 
 def add_game_values(games):
-    with_values = []
-    for game in games:
-        with_values.append((game, start(game)))
+    pool = Pool(cpu_count())
 
-    return with_values
+    return pool.map(play, games)
 
 
 class Genetic:
