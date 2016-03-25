@@ -39,18 +39,10 @@ def genetic_loop(
                 childs.append(child)
 
         current_games = add_game_values(childs)
-
-        if any([x[1] == cut_value for x in current_games]):
-            best_game = [x for x in current_games if x[1] == cut_value][0]
-            print("Best game is: %s" % best_game)
-            break
-
         iterations += 1
 
         if iterations == max_iterations:
-            print("Excedido de las iteraciones maximas")
-            print("Juegos actuales: %s" % current_games)
-            break
+            return current_games
 
 
 if __name__ == '__main__':
