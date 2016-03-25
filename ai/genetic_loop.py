@@ -19,6 +19,10 @@ class Genetic:
     def mutate(self, game):
         return game
 
+    def build_valid_child(self, towers):
+        # TODO fix repeated towers
+        return dict(towers)
+
     def crossover(self, game1, game2):
         child1 = {}
         child2 = {}
@@ -30,8 +34,8 @@ class Genetic:
         random.shuffle(towers)
         half = len(towers) / 2
 
-        child1 = dict(towers[:half])
-        child2 = dict(towers[half:])
+        child1 = self.build_valid_child(towers[:half])
+        child2 = self.build_valid_child(towers[half:])
 
         return child1, child2
 
