@@ -17,7 +17,36 @@ class Genetic:
         self.tower_types = get_tower_types()
 
     def mutate(self, game):
+
+        coord_used = game.keys()
+        coord_free = free_coord(coord_used)
+        mutation_num = random.randint(0, len(game))
+        for i in range(mutation_num):
+            if (i % 2) == 0:
+                # cambiar posiciones de torres
+                old_pos, new_pos = random.choice(list(zip(game, coord_free)))
+                game[new_pos] = game[old_pos]
+                del game[old_pos]
+                coord_free.append(old_pos)
+                coord_free.remove(new_pos)
+            else:
+                # cambiar torres
+                coord_tower, new_tower = random.choice(list(zip(game, self.tower_types)))
+                game[coord_tower] = new_tower
         return game
+
+    def free_coord(coord_used):
+        coord_free = []
+        for i in self.available_locations:
+            if i not in coord_used:
+                coord_free.append(i)
+        return coord_free
+
+    def change_coord(coord, list_coord_used):
+        list_coord_used.append(coord)
+        coord_free = free_coord(list_coord_used)
+        coord = random.choice(coord_free)
+        return coord
 
     def build_valid_child(self, towers):
         # TODO fix repeated towers
