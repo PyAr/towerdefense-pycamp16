@@ -38,9 +38,7 @@ def genetic_loop(
 
                 childs.append(child)
 
-        childs = add_game_values(childs)
-
-        current_games = childs
+        current_games = add_game_values(childs)
 
         if any([x[1] == cut_value for x in current_games]):
             best_game = [x for x in current_games if x[1] == cut_value][0]
