@@ -53,7 +53,7 @@ def go(bootstrap_info, drawing):
             break
 
         # tell the towers to shoot
-        for t in [t for t in towers if t.can_shoot()]:
+        for t in [t for t in towers if t.pre_shoot()]:
             in_range_monsters = []
             for m in monsters:
                 distance = abs(t.position[0] - m.position[0]) + abs(t.position[1] - m.position[1])
