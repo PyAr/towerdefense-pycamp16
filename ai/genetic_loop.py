@@ -5,6 +5,14 @@ from core import get_available_locations, get_tower_types, start
 import random
 
 
+def add_game_values(games):
+    with_values = []
+    for game in games:
+        with_values.append((game, start(game)))
+
+    return with_values
+
+
 def genetic_loop(
         initial_games,
         possible_positions=[],
@@ -18,29 +26,28 @@ def genetic_loop(
         raise Exception("n_games tiene que ser par")
 
     iterations = 0
-    current_games = initial_games
+    current_games = add_game_values(initial_games)
     while True:
-
-        values = []
-        for towers in current_games:
-            values.append((towers, start(towers)))
-
         childs = []
         for _ in range(n_games / 2):
-            best_games = weighted_random_values(values, 2)
-            for child in procrear(best_games):
+            chosen_parents = weighted_random_values(current_games, 2)
+            for child in procrear(chosen_parents):
                 childs.append(child)
 
-        current_games = []
+        next_games = []
         for child in childs:
             if random.random() <= mutation_factor:
-                current_games.append(mutacion(child, possible_positions,
-                                              possible_towers))
+                next_games.append(mutacion(child, possible_positions,
+                                           possible_towers))
             else:
-                current_games.append(child)
+                next_games.append(child)
 
-        if any([x[1] == cut_value for x in best_games]):
-            best_game = [x for x in best_games if x[1] == cut_value][0]
+        next_games = add_game_values(next_games)
+
+        current_games = next_games
+
+        if any([x[1] == cut_value for x in current_games]):
+            best_game = [x for x in current_games if x[1] == cut_value][0]
             print("Best game is: %s" % best_game)
             break
 
