@@ -13,7 +13,7 @@ def get_tower(position, kind):
 class Tower:
     """Basic tower."""
 
-    def __init__(self, position, shooting_range=30, strength=200, cooldown=4):
+    def __init__(self, position, shooting_range=35, strength=200, cooldown=4):
         self.shooting_range = shooting_range
         self.strength = strength
         self.position = position
@@ -67,18 +67,18 @@ class Indecisa(Tower):
 
 
 class Bully(Tower):
-    def __init__(self, position, shooting_range=20, strength=400, cooldown=2):
+    def __init__(self, position, shooting_range=25, strength=400, cooldown=2):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
 
 class Chiflete(Tower):
-    def __init__(self, position, shooting_range=30, strength=20, cooldown=4):
+    def __init__(self, position, shooting_range=35, strength=20, cooldown=4):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
     def _damage(self, monster):
-        monster.affect(damage=self.strength, freeze=5)
+        monster.affect(damage=self.strength, slowdown=5)
 
 
 class FresqueteVertical(Chiflete):
@@ -104,7 +104,7 @@ class FresqueteHorizontal(FresqueteVertical):
 
 
 class Zika(Indecisa):
-    def __init__(self, position, shooting_range=30, strength=25, cooldown=3):
+    def __init__(self, position, shooting_range=35, strength=25, cooldown=3):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
@@ -113,7 +113,7 @@ class Zika(Indecisa):
 
 
 class Camper(Tower):
-    def __init__(self, position, shooting_range=90, strength=800, cooldown=15):
+    def __init__(self, position, shooting_range=85, strength=800, cooldown=15):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
     def _select_targets(self, monsters):
@@ -122,7 +122,7 @@ class Camper(Tower):
 
 
 class Cagona(Tower):
-    def __init__(self, position, shooting_range=100, strength=800, cooldown=7):
+    def __init__(self, position, shooting_range=85, strength=800, cooldown=7):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
@@ -135,7 +135,7 @@ class Cagona(Tower):
 
 
 class CamperDoble(Tower):
-    def __init__(self, position, shooting_range=90, strength=400, cooldown=20):
+    def __init__(self, position, shooting_range=85, strength=400, cooldown=20):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
@@ -145,7 +145,7 @@ class CamperDoble(Tower):
 
 
 class TormentaFogosa(Tower):
-    def __init__(self, position, shooting_range=30, strength=10, cooldown=0):
+    def __init__(self, position, shooting_range=39, strength=10, cooldown=0):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
@@ -153,7 +153,7 @@ class TormentaFogosa(Tower):
         return [x[0] for x in monsters]
 
 class Troll(Tower):
-    def __init__(self, position, shooting_range=30, strength=0, cooldown=2):
+    def __init__(self, position, shooting_range=35, strength=0, cooldown=2):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
@@ -162,7 +162,7 @@ class Troll(Tower):
 
 
 class MiniGun(Tower):
-    def __init__(self, position, shooting_range=30, strength=100, cooldown=7):
+    def __init__(self, position, shooting_range=35, strength=100, cooldown=7):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
@@ -172,6 +172,36 @@ class MiniGun(Tower):
         else:
             self.current_cooldown -= 1
             return True
+
+
+class PechoFrio(CamperDoble):
+    def __init__(self, position, shooting_range=1000, strength=30, cooldown=5):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+    def _damage(self, monster):
+        monster.affect(damage=self.strength, freeze=5)
+
+
+class Patovica(Bully):
+    def _damage(self, monster):
+        monster.affect(damage=self.strength, freeze=1)
+
+
+class Comunista(Tower):
+    def __init__(self, position, shooting_range=39, strength=1000, cooldown=5):
+        super().__init__(position, shooting_range=shooting_range, strength=strength,
+                         cooldown=cooldown)
+
+    monsters = [x[0] for x in monsters]
+
+    def _select_targets(self, monsters):
+        return monsters
+
+    def _damage(self, monsters):
+        monster.affect(damage=self.strength/len(monsters))
+
+
+
 
 
 towers_dic = {
@@ -188,4 +218,7 @@ towers_dic = {
     "Tormenta Fogosa": TormentaFogosa,
     "Troll": Troll,
     "MiniGun": MiniGun,
+    "Pecho Frío": PechoFrio,
+    "Patovica": Patovica,
+    "Comunista": Comunista,
 }
