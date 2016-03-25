@@ -1,33 +1,35 @@
+BOARD = """\
+GLGGG
+GLLLG
+GGGLG
+GGLLG
+GGLGG
+"""
+MAP = """\
+TETTT
+T...T
+TTT.T
+TT..T
+TTOTT
+"""
+
+
 class Field:
 
     WIDHT = 100
     HEIGHT = 100
     SECTION  = 20
 
-    MAP_FILENAME = "map.txt"
-    BOARD_FILENAME = "board.txt"
-
     def __init__(self):
-        self.map = []
-        self.board = []
-        self._load_map_from_file()
-        self._load_board_from_file()
+        self.map = self._load_map(MAP)
+        self.board = self._load_map(BOARD)
 
-    def _load_from_file(self, filename):
-        file_list = []
-        with open(filename, 'r') as f:
-            for line in f:
-                file_list.append(line)
+    def _load_map(self, map_string):
         matrix = []
-        for row in file_list:
-            matrix.append(list(row.replace("\n", "")))
+        list_of_lines = map_string.split("\n")
+        for line in list_of_lines:
+            matrix.append(list(line))
         return matrix
-
-    def _load_map_from_file(self):
-        self.map = self._load_from_file(self.MAP_FILENAME)
-
-    def _load_board_from_file(self):
-        self.board = self._load_from_file(self.BOARD_FILENAME)
 
     def move(bugs):
         """
