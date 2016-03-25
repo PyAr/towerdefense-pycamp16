@@ -32,31 +32,17 @@ def genetic_loop(
         for _ in range(n_games / 2):
             chosen_parents = weighted_random_values(current_games, 2)
             for child in procrear(chosen_parents):
+                if random.random() <= mutation_factor:
+                    child = mutacion(child, possible_positions,
+                                     possible_towers)
+
                 childs.append(child)
 
-        next_games = []
-        for child in childs:
-            if random.random() <= mutation_factor:
-                next_games.append(mutacion(child, possible_positions,
-                                           possible_towers))
-            else:
-                next_games.append(child)
-
-        next_games = add_game_values(next_games)
-
-        current_games = next_games
-
-        if any([x[1] == cut_value for x in current_games]):
-            best_game = [x for x in current_games if x[1] == cut_value][0]
-            print("Best game is: %s" % best_game)
-            break
-
+        current_games = add_game_values(childs)
         iterations += 1
 
         if iterations == max_iterations:
-            print("Excedido de las iteraciones maximas")
-            print("Juegos actuales: %s" % current_games)
-            break
+            return current_games
 
 
 if __name__ == '__main__':
