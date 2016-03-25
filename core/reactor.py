@@ -1,17 +1,39 @@
 
-from . import towers, field, monster, painter
+from . import towers, monster
+from .field import field
 
 BOARD_LENGTH = 100
 TOTAL_REACTOR_LOOPS = 160 * 5   # 5 x path length
 TOTAL_MONSTERS = 100
 
 
-def go(bootstrap_info, drawing):
+class Drawer:
+    """A drawer. Or not."""
+
+    def __init__(self, drawing):
+        if drawing:
+            from . import painter
+            self._painter = painter
+        else:
+            self._painter = None
+
+    def draw_field(self, *a, **k):
+        if self._painter is not None:
+            self._painter.draw_field(*a, **k)
+
+    def draw(self, *a, **k):
+        if self._painter is not None:
+            self._painter.draw(*a, **k)
+
+
+def go(bootstrap_info, drawing=False):
     """Receive a dict with positions as keys, and tower type as values, return the score."""
+    drawer = Drawer(drawing)
+
     # bootstrap, set up the towers
     game_towers = [towers.get_tower(pos, kind) for pos, kind in bootstrap_info.items()]
     field_board = field.get_board()
-    painter.draw_field(field_board, game_towers)
+    drawer.draw_field(field_board, game_towers)
 
     score = 0  # negative, every time a monster finished, +1
     monsters = []
@@ -41,7 +63,7 @@ def go(bootstrap_info, drawing):
         fallen = field.move(monsters)
 
         # draw!
-        painter.draw(monsters, score)
+        drawer.draw(monsters, score)
 
         # remove the fallen monsters (and update the score, they finished!!)
         score += len(fallen)
@@ -53,7 +75,7 @@ def go(bootstrap_info, drawing):
             break
 
         # tell the towers to shoot
-        for t in [t for t in towers if t.pre_shoot()]:
+        for t in [t for t in game_towers if t.pre_shoot()]:
             in_range_monsters = []
             for m in monsters:
                 distance = abs(t.position[0] - m.position[0]) + abs(t.position[1] - m.position[1])
@@ -62,5 +84,5 @@ def go(bootstrap_info, drawing):
             # get monsters for this tower
             t.shoot(in_range_monsters)
 
-    painter.draw(monsters, score)
+    drawer.draw(monsters, score)
     return score

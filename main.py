@@ -16,3 +16,4 @@ tini = time.time()
 score = core.start(test, drawing=True)
 delta = time.time() - tini
 print("Finished! Score: {} (took {:.3f})".format(score, delta))
+input("Press any key to continue")

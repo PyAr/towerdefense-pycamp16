@@ -1,9 +1,6 @@
 
 from . import towers, reactor
-from .field import Field
-
-# some use-only-once instances
-field = Field()
+from .field import field
 
 
 def get_available_locations():
@@ -23,4 +20,4 @@ def start(bootstrap_info, drawing=False):
 
     Return a score.
     """
-    return reactor.go(bootstrap_info)
+    return reactor.go(bootstrap_info, drawing)

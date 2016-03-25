@@ -27,7 +27,7 @@ TOWERS = [
     (90, 10), (90, 30),           (90, 70), (90, 90)]
 
 
-class Field:
+class _Field:
 
     WIDHT = 100
     HEIGHT = 100
@@ -90,3 +90,6 @@ class Field:
     def get_board(self):
         """Return a matrix, with G meaning grass and L land."""
         return self.board
+
+
+field = _Field()

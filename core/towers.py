@@ -31,7 +31,7 @@ class Tower:
 
         self.current_cooldown = self.cooldown
 
-    def pre_shoot(self, cooldown):
+    def pre_shoot(self):
         if self.current_cooldown == 0:
             return True
         else:
