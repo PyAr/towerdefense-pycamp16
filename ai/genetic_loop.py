@@ -1,6 +1,7 @@
 from weighted_random import weighted_random_values
 from procrear import procrear
 from mute import mutacion
+from core import get_available_locations, get_tower_types
 import random
 
 def genetic_loop(
@@ -42,3 +43,11 @@ def genetic_loop(
             print("Juegos actuales: %s" % initial_games)
             break
 
+
+if __name__ == '__main__':
+    initial_games = []
+    genetic_loop(
+      initial_games,
+      get_available_locations(),
+      get_tower_types()
+    )
