@@ -1,7 +1,6 @@
 from weighted_random import weighted_random_values
 from core import get_available_locations, get_tower_types, start
 import random
-import json
 
 
 def add_game_values(games):
@@ -14,7 +13,7 @@ def add_game_values(games):
 
 class Genetic:
     def __init__(self):
-        self.available_locations = get_available_locations(),
+        self.available_locations = get_available_locations()
         self.tower_types = get_tower_types()
 
     def mutate(self, game):
@@ -33,14 +32,26 @@ class Genetic:
         towers.extend(game2.items())
 
         random.shuffle(towers)
-        half = len(towers) / 2
+        half = int(len(towers) / 2)
 
         child1 = self.build_valid_child(towers[:half])
         child2 = self.build_valid_child(towers[half:])
 
         return child1, child2
 
-    def loop(self, initial_games, mutation_factor=0.1, n_games=10, cut_value=0,
+    def random_game(self, towers_size):
+        available = list(self.available_locations[:])
+        random.shuffle(available)
+        positions = [available.pop()
+                     for _ in range(towers_size)]
+        return {position: random.choice(self.tower_types)
+                for position in positions}
+
+    def random_generation(self, population_size, towers_size):
+        return [self.random_game(towers_size)
+                for _ in range(population_size)]
+
+    def loop(self, initial_games, mutation_factor=0.1, n_games=10,
              max_iterations=10000, save_generations_to=None):
 
         if save_generations_to:
@@ -59,7 +70,7 @@ class Genetic:
                 return current_games
 
             childs = []
-            for _ in range(n_games / 2):
+            for _ in range(int(n_games / 2)):
                 chosen_parents = weighted_random_values(current_games, 2)
                 for child in self.crossover(*chosen_parents):
                     if random.random() <= mutation_factor:
@@ -74,10 +85,6 @@ class Genetic:
         self.generations_file = open(generations_file_name, 'w')
 
     def save_generation(self, games):
-        self.generations_file.write(json.dumps(games))
+        line = repr(games)
+        self.generations_file.write(line + '\n')
         self.generations_file.flush()
-
-
-if __name__ == '__main__':
-    genetic = Genetic()
-    genetic.loop([])
