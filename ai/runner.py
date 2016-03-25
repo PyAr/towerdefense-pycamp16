@@ -3,7 +3,7 @@
 
 Usage:
     ./runner.py --help
-    ./runner.py [-g GENERATIONS] [-p POPULATION_SIZE] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE]
+    ./runner.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME]
 
 Options:
     -h --help            Show this help.
@@ -11,6 +11,7 @@ Options:
     -p POPULATION_SIZE   The size of the population of each generation.
     -m MUTATION_FACTOR   The probability (0-1) of a child mutation at birth.
     -f GENERATIONS_FILE  File to save the generations data.
+    -t TOWERS_PER_GAME   The number of towers to place in each game.
 """
 from docopt import docopt
 
@@ -21,15 +22,17 @@ def run():
     """Run a genetic algorithm of games."""
     arguments = docopt(__doc__)
 
-    pop_size = int(arguments['-p'])
-    towers_per_game = 10
+    pop_size = int(arguments['-p'] or 100)
+    towers_per_game = int(arguments['-t'] or 10)
+    mutation_factor = float(arguments['-m'] or 0.1)
+    generations = int(arguments['-g'] or 100)
 
     genetic = Genetic()
     last_generation = genetic.loop(
         initial_games=genetic.random_generation(pop_size, towers_per_game),
-        mutation_factor=float(arguments['-m']),
+        mutation_factor=mutation_factor,
         n_games=pop_size,
-        max_iterations=int(arguments['-g']),
+        max_iterations=generations,
         save_generations_to=arguments['-f'],
     )
     print(last_generation)

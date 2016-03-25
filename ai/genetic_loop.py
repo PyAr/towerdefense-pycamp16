@@ -51,8 +51,8 @@ class Genetic:
         return [self.random_game(towers_size)
                 for _ in range(population_size)]
 
-    def loop(self, initial_games, mutation_factor=0.1, n_games=10,
-             max_iterations=10000, save_generations_to=None):
+    def loop(self, initial_games, mutation_factor, n_games,
+             max_iterations, save_generations_to=None):
 
         if save_generations_to:
             self.prepare_generations_file(save_generations_to)
