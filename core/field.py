@@ -17,7 +17,8 @@ VERTICES = [
     (70, 30),
     (70, 70),
     (50, 70),
-    (50, 100)]
+    (50, 100),
+]
 
 
 class _Field:
@@ -46,10 +47,18 @@ class _Field:
     def _generate_segment_list(self, start, stop):
         result = []
         if start[0] == stop[0]:
-            for i in range(start[1], stop[1]):
+            if start[1] < stop[1]:
+                step = 1
+            else:
+                step = -1
+            for i in range(start[1], stop[1], step):
                 result.append((start[0], i))
         else:
-            for i in range(start[0], stop[0]):
+            if start[0] < stop[0]:
+                step = 1
+            else:
+                step = -1
+            for i in range(start[0], stop[0], step):
                 result.append((i, start[1]))
         return result
 

@@ -4,7 +4,7 @@ import time
 
 import core
 
-QUANT = 7
+QUANT = 10
 
 locations = core.get_available_locations()
 random.shuffle(locations)
@@ -18,7 +18,7 @@ test = {l: k for l, k in zip(r_loc, r_kind)}
 
 
 tini = time.time()
-score = core.start(test, drawing=False)
+score = core.start(test, drawing=True)
 delta = time.time() - tini
 print("Finished for {} quant! Score: {} (took {:.3f})".format(QUANT, score, delta))
 input("Press any key to continue")
