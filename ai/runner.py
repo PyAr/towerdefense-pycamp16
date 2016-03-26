@@ -41,9 +41,9 @@ def run():
         elite_games_count=elite_count,
     )
     for game, value in sorted(last_generation, key=lambda x: x[1]):
-        print(' '.join(['{x},{y}:{t}'.format(x=x, y=y, t=tower_type)
+        print('[{v}]'.format(v=value),
+              ' '.join(['{x},{y}:{t}'.format(x=x, y=y, t=tower_type)
                         for (x, y), tower_type in game.items()]))
-        print('value:', value)
 
 
 if __name__ == '__main__':
