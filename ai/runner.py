@@ -40,10 +40,11 @@ def run():
         save_generations_to=arguments['-f'],
         elite_games_count=elite_count,
     )
-    print(last_generation)
+    for game, value in last_generation:
+        print(' '.join(['{x},{y}:{t}'.format(x=x, y=y, t=tower_type)
+                        for (x, y), tower_type in game.items()]))
+        print('value:', value)
 
 
 if __name__ == '__main__':
     run()
-
-
