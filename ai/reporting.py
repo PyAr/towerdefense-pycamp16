@@ -7,10 +7,12 @@ Usage:
 
 Options:
     -h --help            Show this help.
-    REPORT_TYPE          The report you want to print (possibles: values, ...)
+    REPORT_TYPE          The report you want to print (alternatives: values,
+                         heatmap, ...)
     GENERATIONS_FILE     The file containing the history of generations.
 """
 from docopt import docopt
+import numpy as np
 from bokeh.plotting import figure, show, output_file
 
 
@@ -44,6 +46,40 @@ def values(generations):
         fig.line(generation_indexes, values, color=color, legend=name)
 
     output_file("values.html")
+    show(fig)
+
+
+def heatmap(generations):
+    img = np.zeros((10, 10), dtype=np.uint32)
+    view = img.view(dtype=np.uint8).reshape((10, 10, 4))
+
+    positions_sum = {}
+    positions_count = {}
+    for generation in generations:
+        for game, value in generation:
+            for position, tower_type in game.items():
+                if position not in positions_sum:
+                    positions_sum[position] = 0
+                positions_sum[position] += value
+                if position not in positions_count:
+                    positions_count[position] = 0
+                positions_count[position] += 1
+
+                x, y = position
+                x = x/10
+                y = y/10
+                view[x, y, 0] = 0
+                view[x, y, 1] = int(positions_sum[position] / positions_count[position])
+                view[x, y, 2] = 0
+                view[x, y, 3] = 255
+
+    fig = figure(x_range=(0, 10), y_range=(0, 10))
+
+    # must give a vector of images
+    fig.image_rgba(image=[img], x=0, y=0, dw=10, dh=10)
+
+    output_file("heatmap.html")
+
     show(fig)
 
 
