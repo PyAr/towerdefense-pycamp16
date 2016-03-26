@@ -25,11 +25,22 @@ def run():
 
     pop_size = int(arguments['-p'] or 100)
     towers_per_game = int(arguments['-t'] or 10)
-    mutation_factor = float(arguments['-m'] or 0.1)
     generations = int(arguments['-g'] or 100)
+    mutation_factor = float(arguments['-m'] or 0.1)
     elite_count = arguments['-e']
     if elite_count:
         elite_count = int(elite_count)
+    save_generations_to = arguments['-f']
+
+    print('Running genetic algorithm with:')
+    print('population size:', pop_size)
+    print('towers per game:', towers_per_game)
+    print('generations:', generations)
+    print('mutation factor:', mutation_factor)
+    if elite_count:
+        print('elite games surviving:', elite_count)
+    if save_generations_to:
+        print('saving generations data to:', save_generations_to)
 
     genetic = Genetic()
     last_generation = genetic.loop(
@@ -37,7 +48,7 @@ def run():
         mutation_factor=mutation_factor,
         n_games=pop_size,
         max_iterations=generations,
-        save_generations_to=arguments['-f'],
+        save_generations_to=save_generations_to,
         elite_games_count=elite_count,
     )
     for game, value in sorted(last_generation, key=lambda x: x[1]):
