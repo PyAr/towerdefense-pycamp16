@@ -79,7 +79,7 @@ def heatmap(generations):
                 view[x, y, 0] = 0
                 view[x, y, 1] = 0
                 view[x, y, 2] = 0
-                view[x, y, 3] = positions_max[position] * 2.5
+                view[x, y, 3] = (positions_sum[position] / positions_count[position]) * 2.5
 
     fig = figure(x_range=(0, 10), y_range=(0, 10))
 
