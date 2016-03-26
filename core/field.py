@@ -12,19 +12,12 @@ GGLGG
 """
 
 VERTICES = [
-    (0, 30),
+    (30, 0),
     (30, 30),
-    (30, 70),
+    (70, 30),
     (70, 70),
-    (70, 50),
-    (100, 50)]
-
-TOWERS = [
-    (10, 10),           (10, 50), (10, 70), (10, 90),
-    (30, 10),                               (30, 90),
-    (50, 10), (50, 30), (50, 50),           (50, 90),
-    (70, 10), (70, 30),                     (70, 90),
-    (90, 10), (90, 30),           (90, 70), (90, 90)]
+    (50, 70),
+    (50, 100)]
 
 
 class _Field:
@@ -36,7 +29,6 @@ class _Field:
     def __init__(self):
         self.board = self._load_map(BOARD)
         self.path = self._generate_path_list(VERTICES)
-        self.towers = TOWERS
 
     def _load_map(self, map_string):
         matrix = []
@@ -80,8 +72,14 @@ class _Field:
         return monsters_outside
 
     def get_tower_locations(self):
-        """Return an iterable of tower locations as tuble (x, y)."""
-        return self.towers
+        """Return an iterable of tower locations as tuple (x, y)."""
+        positions = []
+        for lineno, line in enumerate(self.board):
+            for itemno, item in enumerate(line):
+                if item == 'G':
+                    positions.append((itemno * self.SECTION + self.SECTION // 2,
+                                      lineno * self.SECTION + self.SECTION // 2))
+        return positions
 
     def get_monster_entrance(self):
         """Return a monster entrance as a tuble (x, y)."""
