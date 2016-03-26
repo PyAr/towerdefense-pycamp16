@@ -1,6 +1,6 @@
 
 class Monster:
-    def __init__(self, position, life=1000, defense=20, speed=5, poison_affection=10):
+    def __init__(self, position, life=2000, defense=20, speed=5, poison_affection=10):
         self.position = position
         self.life = life
         self.defense = defense
