@@ -65,9 +65,15 @@ class Genetic:
         return coord_free
 
     def change_coord(self, coord, list_coord_used):
+        x1, y1 = coord
+        def distance(other_coord):
+            x2, y2 = other_coord
+            return abs(x1 - x2) + abs(y1 - y2)
+
         list_coord_used.append(coord)
         coord_free = self.free_coord(list_coord_used)
-        coord = random.choice(coord_free)
+        close_coords = list(sorted(coord_free, key=distance))[:3]
+        coord = random.choice(close_coords)
         return coord
 
     def build_valid_child(self, towers):
