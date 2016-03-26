@@ -55,10 +55,10 @@ class Tower:
 
 
 class Indecisa(Tower):
-    def __init__(self, position, shooting_range=30, strength=290, cooldown=5):
+    def __init__(self, position, shooting_range=30, strength=200, cooldown=4):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should change the strenght
     def _select_targets(self, monsters):
         """
         return a list of targets by sampling
@@ -70,25 +70,25 @@ class Indecisa(Tower):
 
 
 class Bully(Tower):
-    def __init__(self, position, shooting_range=25, strength=200, cooldown=1):
+    def __init__(self, position, shooting_range=25, strength=450, cooldown=2):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should change strength
 
 class Chiflete(Tower):
-    def __init__(self, position, shooting_range=35, strength=70, cooldown=5):
+    def __init__(self, position, shooting_range=35, strength=200, cooldown=2):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should change the cooldown and/or the strength
     def _damage(self, monster):
-        monster.affect(damage=self.strength, slowdown=4)
+        monster.affect(damage=self.strength, slowdown=3)
 
 
 class FresqueteVertical(Chiflete):
-    def __init__(self, position, shooting_range=1000, strength=0, cooldown=4):
+    def __init__(self, position, shooting_range=1000, strength=0, cooldown=3):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should change the cooldown
     def _select_targets(self, monsters):
         targets = []
         for (monster, distancia) in monsters:
@@ -98,6 +98,7 @@ class FresqueteVertical(Chiflete):
 
 
 class FresqueteHorizontal(FresqueteVertical):
+	#To nerf this tower you should change Vertical Fresquete
     def _select_targets(self, monsters):
         targets = []
         for (monster, distancia) in monsters:
@@ -110,16 +111,16 @@ class Zika(Indecisa):
     def __init__(self, position, shooting_range=35, strength=100, cooldown=3):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you can change everything
     def _damage(self, monster):
         monster.affect(damage=self.strength, poison=4)
 
 
 class Camper(Tower):
-    def __init__(self, position, shooting_range=85, strength=800, cooldown=15):
+    def __init__(self, position, shooting_range=85, strength=1700, cooldown=12):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should change the cooldown and maybe strength
     def _select_targets(self, monsters):
         monsters = sorted(monsters, key=lambda x: -x[0].position[1])
         return [monsters[0][0]]
@@ -130,7 +131,7 @@ class Cagona(Tower):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
         self._min_distance = 30
-
+	#To nerf this tower you should change the strength or and the cooldown
     def _select_targets(self, monsters):
         for m, dist in monsters:
             if dist <= self._min_distance:
@@ -140,38 +141,38 @@ class Cagona(Tower):
 
 
 class CamperDoble(Tower):
-    def __init__(self, position, shooting_range=85, strength=400, cooldown=20):
+    def __init__(self, position, shooting_range=85, strength=1000, cooldown=13):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should modify strength or/and cooldown, keeping a high cooldown
     def _select_targets(self, monsters):
         monsters = sorted(monsters, key=lambda x: -x[0].position[1])
         return [x[0] for x in monsters[:2]]
 
 
 class TormentaFogosa(Tower):
-    def __init__(self, position, shooting_range=39, strength=10, cooldown=0):
+    def __init__(self, position, shooting_range=39, strength=40, cooldown=1):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should only modify the strength
     def _select_targets(self, monsters):
         return [x[0] for x in monsters]
 
 
 class Troll(Tower):
-    def __init__(self, position, shooting_range=35, strength=1, cooldown=2):
+    def __init__(self, position, shooting_range=35, strength=0, cooldown=2):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you should change the cooldown and or the rage value
     def _damage(self, monster):
         monster.affect(damage=self.strength, rage=5)
 
 
 class MiniGun(Tower):
-    def __init__(self, position, shooting_range=35, strength=100, cooldown=7):
+    def __init__(self, position, shooting_range=35, strength=300, cooldown=7):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#minigun mientras mas cooldown tiene, mas fuerte se vuelve.
     def pre_shoot(self):
         if self.current_cooldown == 0:
             return False
@@ -181,25 +182,26 @@ class MiniGun(Tower):
 
 
 class PechoFrio(CamperDoble):
-    def __init__(self, position, shooting_range=1000, strength=30, cooldown=5):
+    def __init__(self, position, shooting_range=1000, strength=30, cooldown=3):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
-
+	#To nerf this tower you can change everything, but keeping the idea that it
+	#is just a stun tower
     def _damage(self, monster):
         monster.affect(damage=self.strength, freeze=5)
 
 
 class Patovica(Bully):
     def _damage(self, monster):
-        monster.affect(damage=self.strength, freeze=1)
-
+        monster.affect(damage=self.strength, freeze=2)
+	#To nerf this tower you should nerf bully or decrese to 1 freeze
 
 class Comunista(Tower):
     def __init__(self, position, shooting_range=39, strength=500, cooldown=4):
         super().__init__(position, shooting_range=shooting_range,
                          strength=strength, cooldown=cooldown)
         self._monsters_seen = 0
-
+	#To nerf this tower you should change damage or cooldown
     def _select_targets(self, monsters):
         self._monsters_seen = 0
         targets = [x[0] for x in monsters]
@@ -219,13 +221,13 @@ towers_dic = {
     "Fresquete Vertical": FresqueteVertical,
     "Fresquete Horizontal": FresqueteHorizontal,
     "Zika": Zika,
-    # "Camper": Camper,
-    # "Cagona": Cagona,
-    # "Camper Doble": CamperDoble,
+    "Camper": Camper,
+    "Cagona": Cagona,
+    "Camper Doble": CamperDoble,
     "Tormenta Fogosa": TormentaFogosa,
     "Troll": Troll,
     "MiniGun": MiniGun,
-    # "Pecho Frio": PechoFrio,
-    # "Patovica": Patovica,
+    "Pecho Frio": PechoFrio,
+    "Patovica": Patovica,
     "Comunista": Comunista,
 }
