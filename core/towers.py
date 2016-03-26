@@ -70,7 +70,7 @@ class Indecisa(Tower):
 
 
 class Bully(Tower):
-    def __init__(self, position, shooting_range=25, strength=360, cooldown=1):
+    def __init__(self, position, shooting_range=25, strength=200, cooldown=1):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
 
