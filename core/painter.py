@@ -78,7 +78,8 @@ def draw(monsters, death_monsters, score):
     and score
     '''
     _drawables.monsters = monsters
-    _drawables.death_monsters = death_monsters
+    for m in death_monsters:        
+        _drawables.death_monsters.append(m.position,6)
     _drawables.score = score
     _refresh()
     
@@ -99,6 +100,11 @@ def on_draw():
                           anchor_x='left', anchor_y='top')
         label.draw()
 
+    for monster in _drawables.death_monsters:
+        if monster[1]:
+            sprite=_paint_sprite(img_death, monster[0])
+            monster[1]-=1
+
     for monster in _drawables.monsters:
         key=''
         if monster.life < DAMAGE_LIMIT:
@@ -112,8 +118,6 @@ def on_draw():
         
         sprite=_paint_sprite(IMG_MONSTERS[key], monster.position)
 
-    for monster in _drawables.death_monsters:
-        sprite=_paint_sprite(img_death, monster.position)
              
     label = pyglet.text.Label('Score:'+str(_drawables.score),
                           font_name='Times New Roman',
