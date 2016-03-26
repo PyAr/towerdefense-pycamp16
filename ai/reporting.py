@@ -15,12 +15,20 @@ Options:
 from docopt import docopt
 import numpy as np
 from bokeh.plotting import figure, show, output_file
+from core import get_available_locations
 
 
 def read_generations(generations_file):
     with open(generations_file) as generations_data:
         return [eval(line)
                 for line in generations_data.readlines()]
+
+
+def transform_into_simple_grid(position):
+    x, y = position
+    x = (x + 10) / 20 - 1
+    y = 4 - ((y + 10) / 20 - 1)
+    return x, y
 
 
 class Report():
@@ -58,6 +66,22 @@ class Report():
         img = np.zeros((5, 5), dtype=np.uint32)
         view = img.view(dtype=np.uint8).reshape((5, 5, 4))
 
+        available_locations = [transform_into_simple_grid(position)
+                               for position in get_available_locations()]
+
+        for x in range(5):
+            for y in range(5):
+                if (x, y) in available_locations:
+                    view[y, x, 0] = 0
+                    view[y, x, 1] = 255
+                    view[y, x, 2] = 0
+                else:
+                    view[y, x, 0] = 165
+                    view[y, x, 1] = 42
+                    view[y, x, 2] = 42
+
+                view[y, x, 3] = 255
+
         positions_sum = {}
         positions_count = {}
         positions_max = {}
@@ -84,9 +108,7 @@ class Report():
                     positions_min[position] = min(positions_min[position],
                                                   value)
 
-                    x, y = position
-                    x = (x + 10) / 20 - 1
-                    y = 4 - ((y + 10) / 20 - 1)
+                    x, y = transform_into_simple_grid(position)
                     view[y, x, 0] = 0
                     view[y, x, 1] = 0
                     view[y, x, 2] = 0
