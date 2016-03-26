@@ -5,30 +5,37 @@ import os, glob
 
 pyglet.clock.set_fps_limit(60)
 
-width = height = 160
-max_row = max_col = 5
+
 pyglet.resource.path = ['media/images']
 pyglet.resource.reindex()
 img_tower = pyglet.resource.image('tower.png')
-img_tower.anchor_x=img_tower.width//2
-img_tower.anchor_y=img_tower.height//2
+img_tower.anchor_x = img_tower.width//2
+img_tower.anchor_y = img_tower.height//2
 img_grass = pyglet.resource.image('grass.png')
 img_route = pyglet.resource.image('route.png')
+HORIZ_RES = 5 * img_grass.width
+VERT_RES = 5 * img_grass.height
+
+VERT_UNIT = VERT_RES // 100
+HORIZ_UNIT = HORIZ_RES // 100
+
+DAMAGE_LIMIT = 80
 
 
-img_monsters={}
+
+IMG_MONSTERS = {}
 for filename in glob.glob("media/images/monster*.png"):
-    filename=os.path.split(filename)[1]
-    name_file=os.path.splitext(filename)[0]
+    filename = os.path.split(filename)[1]
+    name_file = os.path.splitext(filename)[0]
 
-    attribs=name_file.split('-')
+    attribs = name_file.split('-')
     attribs.remove('monster')
     attribs.sort()
-    key=''.join([k[0] for k in attribs])
+    key = ''.join([k[0] for k in attribs])
     img_monster = pyglet.resource.image(filename)
-    img_monster.anchor_x=img_monster.width//2
-    img_monster.anchor_y=img_monster.height//2
-    img_monsters[key]=img_monster
+    img_monster.anchor_x = img_monster.width // 2
+    img_monster.anchor_y = img_monster.height // 2
+    IMG_MONSTERS[key] = img_monster
     
 game_window = None       
 
@@ -39,40 +46,39 @@ class Drawables():
     sprites=[]
     score=0
 
-drawables=Drawables()
+_drawables = Drawables()
 
 def draw_field(board,towers):
     global game_window
 
-    drawables.board = board
-    drawables.towers = towers          
-    game_window = pyglet.window.Window(width*max_row, height*max_col)        
+    _drawables.board = board
+    _drawables.towers = towers          
+    game_window = pyglet.window.Window(HORIZ_RES, VERT_RES)
 
     game_window.push_handlers(on_draw)
-    refresh()
+    _refresh()
 
 def draw(monsters,score):
-    drawables.monsters = monsters
-    drawables.score = score
-    refresh()
+    _drawables.monsters = monsters
+    _drawables.score = score
+    _refresh()
     
 def on_draw():
-    paint_background()
+    _paint_background()
     
-    for tower in drawables.towers:
-        sprite=paint_sprite(img_tower,
-            tower.position
-            )
-        label = pyglet.text.Label(tower.type,
-                              font_name='Times New Roman',
-                              font_size=11,
-                              x=sprite.x+img_tower.anchor_x, y=sprite.y,
-                              anchor_x='center', anchor_y='top')
+    for tower in _drawables.towers:
+        sprite=_paint_sprite(img_tower, tower.position)
+        label = pyglet.text.Label(
+                          str(tower.__class__.__name__),
+                          font_name='Times New Roman',
+                          font_size=11,
+                          x=sprite.x+img_tower.anchor_x, y=sprite.y,
+                          anchor_x='center', anchor_y='top')
         label.draw()
 
-    for monster in drawables.monsters:
+    for monster in _drawables.monsters:
         key=''
-        if monster.life < 80:
+        if monster.life < DAMAGE_LIMIT:
             key+='d' #damaged
         if monster.freeze:
             key+='f'
@@ -81,62 +87,40 @@ def on_draw():
         if monster.rage:
             key+='r'
         
-        sprite=paint_sprite(img_monsters[key],
-            monster.position)
-        sprite.opacity=monster.opac()
+        sprite=_paint_sprite(IMG_MONSTERS[key], monster.position)
             
-    label = pyglet.text.Label('Score:'+str(drawables.score),
+    label = pyglet.text.Label('Score:'+str(_drawables.score),
                           font_name='Times New Roman',
                           font_size=16,
                           x=game_window.width-5, y=game_window.height-5,
                           anchor_x='right', anchor_y='top')
     label.draw()
 
-def paint_background():
-    for row, line in enumerate(drawables.board):
+def _paint_background():
+    for row, line in enumerate(_drawables.board):
         for col, value in enumerate(line):
             if value == 'G':
                 image = img_grass
             else:
                 image = img_route
-            x=col*width
-            y=max_row*height-(row+1)*height
-            image.blit(x,y)
+            x = col * image.width
+            y = VERT_RES - (row + 1) * image.height
+            image.blit(x, y)
     
 
-def paint_sprite(img,pos):
-    x=pos[0]*8#-20
-    y=max_row*height-pos[1]*8#-20
-    sprite = pyglet.sprite.Sprite(img, 
-        x=x,
-        y=y)
+def _paint_sprite(img, pos):
+    x = pos[0] * HORIZ_UNIT
+    y = VERT_RES - pos[1] * VERT_UNIT
+    sprite = pyglet.sprite.Sprite(img, x = x, y = y)
     sprite.draw()
     return sprite
 
    
-def draw_(monsters,score):
-    for monster in monsters:
-        if not monster in drawables.monsters:
-            sprite=paint_sprite(img_monster,
-                monster.position[0]*8-20,
-                monster.position[1]*8+20
-                )
-            #drawables.monsters.append(monster)
-            drawables.sprites.append(sprite)
-            print ('hola mundo',monster.position)
-        else:
-            idx = drawables.monsters.index(monster)
-            sprite = drawables.sprites[idx]
-            sprite.x=monster.position[0]*8-20
-            sprite.y=monster.position[1]*8+20
-
-def refresh():
+def _refresh():
     pyglet.clock.tick()
     game_window.dispatch_events()
     game_window.dispatch_event('on_draw')
     game_window.flip()
 
 
-if __name__=="__main__":
-    from main import board
-    draw_field(board,[])
+
