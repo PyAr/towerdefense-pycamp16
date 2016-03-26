@@ -27,6 +27,7 @@ def add_game_values(games):
             jobs.append(p)
             p.start()
 
+        # waits for all the subprocesses to finish, then saves the results
         for job in jobs:
             job.join()
             results.append(q.get())
