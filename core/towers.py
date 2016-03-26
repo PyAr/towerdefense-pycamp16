@@ -33,7 +33,7 @@ class Tower:
         # if there is targets to shoot, active cooldown
         if targets:
             self.current_cooldown = self.cooldown
-
+        return targets
     def pre_shoot(self):
         if self.current_cooldown == 0:
             return True
