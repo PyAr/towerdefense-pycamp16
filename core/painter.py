@@ -24,7 +24,12 @@ DAMAGE_LIMIT = 80
 #load tower image
 img_tower = pyglet.resource.image('tower.png')
 img_tower.anchor_x = img_tower.width//2
-img_tower.anchor_y = img_tower.height//2
+img_tower.anchor_y = img_tower.height//2 - 11
+
+img_death = pyglet.resource.image('death.png')
+img_death.anchor_x = img_death.width//2
+img_death.anchor_y = img_death.height//2
+
 
 
 
@@ -50,7 +55,7 @@ class Drawables():
     board=[]
     towers=[]
     monsters=[]
-    sprites=[]
+    death_monsters=[]
     score=0
 
 _drawables = Drawables()
@@ -68,11 +73,12 @@ def draw_field(board,towers):
     game_window.push_handlers(on_close)
     _refresh()
 
-def draw(monsters,score):
+def draw(monsters, death_monsters, score):
     '''to draw dynamic objecs: monsters 
     and score
     '''
     _drawables.monsters = monsters
+    _drawables.death_monsters = death_monsters
     _drawables.score = score
     _refresh()
     
@@ -105,7 +111,10 @@ def on_draw():
             key+='r'
         
         sprite=_paint_sprite(IMG_MONSTERS[key], monster.position)
-            
+
+    for monster in _drawables.death_monsters:
+        sprite=_paint_sprite(img_death, monster.position)
+             
     label = pyglet.text.Label('Score:'+str(_drawables.score),
                           font_name='Times New Roman',
                           font_size=16,
