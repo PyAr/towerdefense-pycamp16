@@ -55,6 +55,8 @@ def heatmap(generations):
 
     positions_sum = {}
     positions_count = {}
+    positions_max = {}
+    positions_min = {}
     for generation in generations:
         for game, value in generation:
             for position, tower_type in game.items():
@@ -64,14 +66,20 @@ def heatmap(generations):
                 if position not in positions_count:
                     positions_count[position] = 0
                 positions_count[position] += 1
+                if position not in positions_max:
+                    positions_max[position] = 0
+                positions_max[position] = max(positions_max[position], value)
+                if position not in positions_min:
+                    positions_min[position] = 0
+                positions_min[position] = min(positions_min[position], value)
 
                 x, y = position
                 x = x/10
                 y = y/10
                 view[x, y, 0] = 0
-                view[x, y, 1] = int(positions_sum[position] / positions_count[position])
+                view[x, y, 1] = 0
                 view[x, y, 2] = 0
-                view[x, y, 3] = 255
+                view[x, y, 3] = positions_max[position] * 2.5
 
     fig = figure(x_range=(0, 10), y_range=(0, 10))
 
