@@ -3,13 +3,14 @@
 
 Usage:
     ./reporting.py --help
-    ./reporting.py REPORT_TYPE GENERATIONS_FILE
+    ./reporting.py REPORT_TYPE GENERATIONS_FILE [-t TOWER_TYPE]
 
 Options:
     -h --help            Show this help.
     REPORT_TYPE          The report you want to print (alternatives: values,
                          heatmap, ...)
     GENERATIONS_FILE     The file containing the history of generations.
+    -t TOWER_TYPE        Filter data for the specified tower type.
 """
 from docopt import docopt
 import numpy as np
@@ -22,73 +23,85 @@ def read_generations(generations_file):
                 for line in generations_data.readlines()]
 
 
-def values(generations):
-    generation_indexes = range(len(generations))
+class Report():
+    def __init__(self, generations, tower_type=None):
+        self.generations = generations
+        self.tower_type = tower_type
 
-    fig = figure()
+    def values(self):
+        generation_indexes = range(len(self.generations))
 
-    fig.xaxis.axis_label = 'generation'
+        fig = figure(title='Game values over generations')
 
-    maxes = [max([value for game, value in generation])
-             for generation in generations]
-    mins = [min([value for game, value in generation])
-            for generation in generations]
-    averages = [sum([value for game, value in generation]) / len(generation)
-                for generation in generations]
+        fig.xaxis.axis_label = 'generation'
 
-    value_groups = (
-        ('max value', 'green', maxes),
-        ('min value', 'red', mins),
-        ('average value', 'blue', averages),
-    )
+        maxes = [max([value for game, value in generation])
+                 for generation in self.generations]
+        mins = [min([value for game, value in generation])
+                for generation in self.generations]
+        averages = [sum([value for game, value in generation]) / len(generation)
+                    for generation in self.generations]
 
-    for name, color, values in value_groups:
-        fig.line(generation_indexes, values, color=color, legend=name)
+        value_groups = (
+            ('max value', 'green', maxes),
+            ('min value', 'red', mins),
+            ('average value', 'blue', averages),
+        )
 
-    output_file("values.html")
-    show(fig)
+        for name, color, values in value_groups:
+            fig.line(generation_indexes, values, color=color, legend=name)
 
+        output_file("values.html")
+        show(fig)
 
-def heatmap(generations):
-    img = np.zeros((5, 5), dtype=np.uint32)
-    view = img.view(dtype=np.uint8).reshape((5, 5, 4))
+    def heatmap(self):
+        img = np.zeros((5, 5), dtype=np.uint32)
+        view = img.view(dtype=np.uint8).reshape((5, 5, 4))
 
-    positions_sum = {}
-    positions_count = {}
-    positions_max = {}
-    positions_min = {}
-    for generation in generations:
-        for game, value in generation:
-            for position, tower_type in game.items():
-                if position not in positions_sum:
-                    positions_sum[position] = 0
-                positions_sum[position] += value
-                if position not in positions_count:
-                    positions_count[position] = 0
-                positions_count[position] += 1
-                if position not in positions_max:
-                    positions_max[position] = 0
-                positions_max[position] = max(positions_max[position], value)
-                if position not in positions_min:
-                    positions_min[position] = 0
-                positions_min[position] = min(positions_min[position], value)
+        positions_sum = {}
+        positions_count = {}
+        positions_max = {}
+        positions_min = {}
+        for generation in self.generations:
+            for game, value in generation:
+                for position, tower_type in game.items():
+                    if self.tower_type is not None and \
+                       self.tower_type != tower_type:
+                        continue
 
-                x, y = position
-                x = (x + 10) / 20 - 1
-                y = 4 - ((y + 10) / 20 - 1)
-                view[y, x, 0] = 0
-                view[y, x, 1] = 0
-                view[y, x, 2] = 0
-                view[y, x, 3] = (positions_sum[position] / positions_count[position]) * 2.5
+                    if position not in positions_sum:
+                        positions_sum[position] = 0
+                    positions_sum[position] += value
+                    if position not in positions_count:
+                        positions_count[position] = 0
+                    positions_count[position] += 1
+                    if position not in positions_max:
+                        positions_max[position] = 0
+                    positions_max[position] = max(positions_max[position],
+                                                  value)
+                    if position not in positions_min:
+                        positions_min[position] = 0
+                    positions_min[position] = min(positions_min[position],
+                                                  value)
 
-    fig = figure(x_range=(0, 5), y_range=(0, 5))
+                    x, y = position
+                    x = (x + 10) / 20 - 1
+                    y = 4 - ((y + 10) / 20 - 1)
+                    view[y, x, 0] = 0
+                    view[y, x, 1] = 0
+                    view[y, x, 2] = 0
+                    view[y, x, 3] = (positions_sum[position] /
+                                     positions_count[position]) * 2.5
 
-    # must give a vector of images
-    fig.image_rgba(image=[img], x=0, y=0, dw=5, dh=5)
+        fig = figure(title='Game value over locations',
+                     x_range=(0, 5), y_range=(0, 5))
 
-    output_file("heatmap.html")
+        # must give a vector of images
+        fig.image_rgba(image=[img], x=0, y=0, dw=5, dh=5)
 
-    show(fig)
+        output_file("heatmap.html")
+
+        show(fig)
 
 
 def run():
@@ -97,8 +110,13 @@ def run():
 
     report_type = arguments['REPORT_TYPE']
     generations_file = arguments['GENERATIONS_FILE']
+    tower_type = arguments['-t']
 
-    globals()[report_type](read_generations(generations_file))
+    report = Report(
+        generations=read_generations(generations_file),
+        tower_type=tower_type,
+    )
+    getattr(report, report_type)()
 
 if __name__ == '__main__':
     run()
