@@ -2,17 +2,36 @@ from weighted_random import weighted_random_values
 from core import get_available_locations, get_tower_types, start
 import random
 import sys
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Process, Queue, cpu_count
 
 
 
-def play(game):
-    return game, start(game)
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i+n]
+
+
+def play(game, queue):
+    queue.put((game, start(game)))
+
 
 def add_game_values(games):
-    pool = Pool(cpu_count())
+    results = []
 
-    return pool.map(play, games)
+    q = Queue()
+    for chunk in chunks(games, cpu_count()):
+        jobs = []
+        for game in chunk:
+            p = Process(target=play, args=(game, q))
+            jobs.append(p)
+            p.start()
+
+        for job in jobs:
+            job.join()
+            results.append(q.get())
+
+    return results
 
 
 class Genetic:
