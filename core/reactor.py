@@ -81,8 +81,10 @@ def go(bootstrap_info, drawing=False):
             m.update()
 
         # remove the dead monsters
+        dead_monsters = []
         for i in range(len(monsters) - 1, -1, -1):
             if monsters[i].life <= 0:
+                dead_monsters.append(monsters[i])
                 del monsters[i]
 
         # add one more monster to the board, if any remaining
@@ -98,7 +100,7 @@ def go(bootstrap_info, drawing=False):
         fallen = field.move(monsters)
 
         # draw!
-        drawer.draw(monsters, score)
+        drawer.draw(monsters, dead_monsters, score)
 
         # remove the fallen monsters (and update the score, they finished!!)
         score -= len(fallen)
@@ -121,5 +123,5 @@ def go(bootstrap_info, drawing=False):
 
         vsync.stop_and_wait()
 
-    drawer.draw(monsters, score)
+    drawer.draw(monsters, dead_monsters, score)
     return score

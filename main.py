@@ -4,7 +4,7 @@ import time
 
 import core
 
-QUANT = 7
+QUANT = 10
 
 locations = core.get_available_locations()
 random.shuffle(locations)
