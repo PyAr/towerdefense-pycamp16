@@ -3,7 +3,7 @@
 
 Usage:
     ./learn.py --help
-    ./learn.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME] [-e ELITE_GAMES]
+    ./learn.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME] [-e ELITE_GAMES] [--draw]
 
 Options:
     -h --help            Show this help.
@@ -13,10 +13,13 @@ Options:
     -f GENERATIONS_FILE  File to save the generations data.
     -t TOWERS_PER_GAME   The number of towers to place in each game.
     -e ELITE_GAMES       The number of elite games that survive generations.
+    --draw               If specified, will draw (play with nice graphics) the best game.
+                         (if elites, the best of them. Else, the best from the last generation)
 """
 from docopt import docopt
 
 from ai.genetic_loop import Genetic
+from core.reactor import go as go_game
 
 
 def print_generation(generation):
@@ -64,6 +67,15 @@ def run():
     if elite_count:
         print('Best games:')
         print_generation(elites)
+
+    if arguments['--draw']:
+        if elites:
+            game_to_draw = elites[-1]
+        else:
+            game_to_draw = list(sorted(last_generation,
+                                       key=lambda game: game[1]))[-1]
+
+        go_game(game_to_draw[0], drawing=True)
 
 
 if __name__ == '__main__':
