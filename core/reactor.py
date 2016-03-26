@@ -1,3 +1,4 @@
+import time
 
 from . import towers, monster
 from .field import field
@@ -29,6 +30,34 @@ class Drawer:
             self._painter.draw(*a, **k)
 
 
+class VerticalSync:
+    """Introduce delays for loop to not be so fast."""
+
+    frame_duration = 100 / 1000  # ms
+
+    def __init__(self, active):
+        self._active = active
+        self._started = None
+
+    def start(self):
+        if not self._active:
+            return
+        assert self._started is None
+        self._started = time.time()
+
+    def stop_and_wait(self):
+        if not self._active:
+            return
+        assert self._started is not None
+        used_time = time.time() - self._started
+        self._started = None
+        to_wait = self.frame_duration - used_time
+        if to_wait > 0:
+            time.sleep(to_wait)
+        else:
+            print("WARNING: loop took too much: {:.3f}s".format(used_time))
+
+
 def go(bootstrap_info, drawing=False):
     """Receive a dict with positions as keys, and tower type as values, return the score."""
     drawer = Drawer(drawing)
@@ -42,8 +71,11 @@ def go(bootstrap_info, drawing=False):
     monsters = []
     remaining_monsters = TOTAL_MONSTERS
     initial_monster_position = field.get_monster_entrance()
+    vsync = VerticalSync(drawing)
 
     for step in range(TOTAL_REACTOR_LOOPS):
+        vsync.start()
+
         # update the monsters, remove the dead ones
         for m in monsters:
             m.update()
@@ -86,6 +118,8 @@ def go(bootstrap_info, drawing=False):
                     in_range_monsters.append((m, distance))
             # get monsters for this tower
             t.shoot(in_range_monsters)
+
+        vsync.stop_and_wait()
 
     drawer.draw(monsters, score)
     return score
