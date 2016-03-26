@@ -1,4 +1,4 @@
-from weighted_random import weighted_random_values
+from ai.weighted_random import weighted_random_values
 from core import get_available_locations, get_tower_types, start
 import random
 import sys

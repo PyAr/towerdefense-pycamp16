@@ -2,8 +2,8 @@
 """Genetic experiment runner.
 
 Usage:
-    ./runner.py --help
-    ./runner.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME] [-e ELITE_GAMES]
+    ./learn.py --help
+    ./learn.py [-p POPULATION_SIZE] [-g GENERATIONS] [-m MUTATION_FACTOR] [-f GENERATIONS_FILE] [-t TOWERS_PER_GAME] [-e ELITE_GAMES]
 
 Options:
     -h --help            Show this help.
