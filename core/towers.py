@@ -194,7 +194,7 @@ class Patovica(Bully):
 
 
 class Comunista(Tower):
-    def __init__(self, position, shooting_range=35, strength=1000, cooldown=4):
+    def __init__(self, position, shooting_range=39, strength=500, cooldown=4):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
         self._monsters_seen = 0
@@ -221,10 +221,10 @@ towers_dic = {
     #"Camper": Camper,
     #"Cagona": Cagona,
     #"Camper Doble": CamperDoble,
-    #"Tormenta Fogosa": TormentaFogosa,
+    "Tormenta Fogosa": TormentaFogosa,
     #"Troll": Troll,
-    #"MiniGun": MiniGun,
+    "MiniGun": MiniGun,
     #"Pecho Frio": PechoFrio,
     #"Patovica": Patovica,
-    #"Comunista": Comunista,
+    "Comunista": Comunista,
 }
