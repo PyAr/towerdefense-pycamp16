@@ -27,9 +27,12 @@ img_tower = pyglet.resource.image('tower.png')
 img_tower.anchor_x = img_tower.width // 2
 img_tower.anchor_y = img_tower.height // 2 - 11
 
-img_death = pyglet.resource.image('death.png')
-img_death.anchor_x = img_death.width // 2
-img_death.anchor_y = img_death.height // 2
+img_deaths = []
+for n in range(3):
+    img = pyglet.resource.image('death{}.png'.format(n))
+    img.anchor_x = img.width // 2
+    img.anchor_y = img.height // 2
+    img_deaths.append(img)
 
 
 # creates a dict of images of monsters
@@ -74,7 +77,7 @@ def draw_field(board, towers):
     _refresh()
 
 
-def draw(monsters, death_monsters, score):
+def draw(monsters, death_monsters, score, _):
     '''to draw dynamic objecs: monsters
     and score
     '''
@@ -105,6 +108,8 @@ def on_draw():
 
     for monster in _drawables.death_monsters:
         if monster[1]:
+            img_death_idx = (monster[1] - 1) // 2
+            img_death = img_deaths[img_death_idx]
             sprite = _paint_sprite(img_death, monster[0])
             monster[1] -= 1
 

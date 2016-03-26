@@ -42,13 +42,13 @@ class VerticalSync:
     def start(self):
         if not self._active:
             return
-        assert self._started is None
         self._started = time.time()
 
     def stop_and_wait(self):
         if not self._active:
             return
-        assert self._started is not None
+        if self._started is None:
+            return
         used_time = time.time() - self._started
         self._started = None
         to_wait = self.frame_duration - used_time
@@ -99,8 +99,20 @@ def go(bootstrap_info, drawing=False):
         # tell the field to move the monsters
         fallen = field.move(monsters)
 
+        # tell the towers to shoot
+        shoot_info = []
+        for t in [t for t in game_towers if t.pre_shoot()]:
+            in_range_monsters = []
+            for m in monsters:
+                distance = abs(t.position[0] - m.position[0]) + abs(t.position[1] - m.position[1])
+                if t.shooting_range >= distance:
+                    in_range_monsters.append((m, distance))
+            # get monsters for this tower
+            shot_monsters = t.shoot(in_range_monsters)
+            shoot_info.append((t, shot_monsters))
+
         # draw!
-        drawer.draw(monsters, dead_monsters, score)
+        drawer.draw(monsters, dead_monsters, score, shoot_info)
 
         # remove the fallen monsters (and update the score, they finished!!)
         score -= len(fallen)
@@ -111,17 +123,11 @@ def go(bootstrap_info, drawing=False):
         if not monsters and not remaining_monsters:
             break
 
-        # tell the towers to shoot
-        for t in [t for t in game_towers if t.pre_shoot()]:
-            in_range_monsters = []
-            for m in monsters:
-                distance = abs(t.position[0] - m.position[0]) + abs(t.position[1] - m.position[1])
-                if t.shooting_range >= distance:
-                    in_range_monsters.append((m, distance))
-            # get monsters for this tower
-            t.shoot(in_range_monsters)
-
         vsync.stop_and_wait()
 
-    drawer.draw(monsters, dead_monsters, score)
+    for _ in range(10):
+        # just make the painter to cycle some more times, for drawings to end properly
+        vsync.start()
+        drawer.draw(monsters, [], score, [])
+        vsync.stop_and_wait()
     return score
