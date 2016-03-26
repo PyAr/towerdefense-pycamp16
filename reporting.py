@@ -115,7 +115,11 @@ class Report():
                     view[y, x, 3] = (positions_sum[position] /
                                      positions_count[position]) * 2.5
 
-        fig = figure(title='Game value over locations',
+        title = 'Game value over locations'
+        if self.tower_type:
+            title += ' ({})'.format(self.tower_type)
+
+        fig = figure(title=title,
                      x_range=(0, 5), y_range=(0, 5))
 
         # must give a vector of images
