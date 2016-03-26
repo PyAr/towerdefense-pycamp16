@@ -57,3 +57,18 @@ class Monster:
         self._poison += poison
         self._freeze += freeze
         self._slowdown += slowdown
+
+    def rage(self):
+        if self._rage:
+            return True
+        return False
+
+    def freeze(self):
+        if self._freeze:
+            return True
+        return False
+
+    def poison(self):
+        if self._poison:
+            return True
+        return False
