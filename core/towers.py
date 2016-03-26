@@ -114,7 +114,7 @@ class Zika(Indecisa):
     def _damage(self, monster):
         monster.affect(damage=self.strength, poison=4)
 
-"""
+
 class Camper(Tower):
     def __init__(self, position, shooting_range=85, strength=800, cooldown=15):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
@@ -157,6 +157,7 @@ class TormentaFogosa(Tower):
     def _select_targets(self, monsters):
         return [x[0] for x in monsters]
 
+
 class Troll(Tower):
     def __init__(self, position, shooting_range=35, strength=0, cooldown=2):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
@@ -193,7 +194,7 @@ class Patovica(Bully):
 
 
 class Comunista(Tower):
-    def __init__(self, position, shooting_range=39, strength=1000, cooldown=5):
+    def __init__(self, position, shooting_range=35, strength=1000, cooldown=4):
         super().__init__(position, shooting_range=shooting_range, strength=strength,
                          cooldown=cooldown)
         self._monsters_seen = 0
@@ -207,7 +208,7 @@ class Comunista(Tower):
     def _damage(self, monster):
         damage = self.strength / self._monsters_seen
         monster.affect(damage=damage)
-"""
+
 
 towers_dic = {
     "Comunacha": Tower,
