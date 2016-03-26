@@ -50,8 +50,8 @@ def values(generations):
 
 
 def heatmap(generations):
-    img = np.zeros((10, 10), dtype=np.uint32)
-    view = img.view(dtype=np.uint8).reshape((10, 10, 4))
+    img = np.zeros((5, 5), dtype=np.uint32)
+    view = img.view(dtype=np.uint8).reshape((5, 5, 4))
 
     positions_sum = {}
     positions_count = {}
@@ -74,17 +74,17 @@ def heatmap(generations):
                 positions_min[position] = min(positions_min[position], value)
 
                 x, y = position
-                x = x/10
-                y = y/10
+                x = (x + 10) / 20 - 1
+                y = (y + 10) / 20 - 1
                 view[x, y, 0] = 0
                 view[x, y, 1] = 0
                 view[x, y, 2] = 0
                 view[x, y, 3] = (positions_sum[position] / positions_count[position]) * 2.5
 
-    fig = figure(x_range=(0, 10), y_range=(0, 10))
+    fig = figure(x_range=(0, 5), y_range=(0, 5))
 
     # must give a vector of images
-    fig.image_rgba(image=[img], x=0, y=0, dw=10, dh=10)
+    fig.image_rgba(image=[img], x=0, y=0, dw=5, dh=5)
 
     output_file("heatmap.html")
 
