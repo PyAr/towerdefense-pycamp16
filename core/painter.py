@@ -34,7 +34,6 @@ for n in range(3):
     img.anchor_y = img.height // 2
     img_deaths.append(img)
 
-
 # creates a dict of images of monsters
 IMG_MONSTERS = {}
 for filename in glob.glob("media/images/monster*.png"):
@@ -60,6 +59,7 @@ class Drawables():
     monsters = []
     death_monsters = []
     score = 0
+    shooting_info = []
 
 _drawables = Drawables()
 
@@ -77,14 +77,13 @@ def draw_field(board, towers):
     _refresh()
 
 
-def draw(monsters, death_monsters, score, _):
-    '''to draw dynamic objecs: monsters
-    and score
-    '''
+def draw(monsters, death_monsters, score, shooting_info):
+    """Draw dynamic objecs: monsters and score."""
     _drawables.monsters = monsters
     for m in death_monsters:
         _drawables.death_monsters.append([m.position, 6])
     _drawables.score = score
+    _drawables.shooting_info = shooting_info
     _refresh()
 
 
@@ -95,6 +94,7 @@ def on_close():
 
 def on_draw():
     _paint_background()
+    pyglet.gl.glLineWidth(2)
 
     for tower in _drawables.towers:
         sprite = _paint_sprite(img_tower, tower.position)
@@ -133,6 +133,21 @@ def on_draw():
         x=game_window.width - 5, y=game_window.height - 5,
         anchor_x='right', anchor_y='top')
     label.draw()
+
+    for tower, monsters in _drawables.shooting_info:
+        tow_x = tower.position[0] * HORIZ_UNIT
+        tow_y = VERT_RES - tower.position[1] * VERT_UNIT
+
+        if monsters:
+            for monster in monsters:
+                mon_x = monster.position[0] * HORIZ_UNIT
+                mon_y = VERT_RES - monster.position[1] * VERT_UNIT
+
+                pyglet.graphics.draw(
+                    2, pyglet.gl.GL_LINES,
+                    ("v2i", (tow_x, tow_y, mon_x, mon_y)),
+                    ("c4B", (255, 0, 0, 255) * 2),
+                )
 
 
 def _paint_background():
