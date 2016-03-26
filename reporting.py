@@ -72,9 +72,9 @@ class Report():
         for x in range(5):
             for y in range(5):
                 if (x, y) in available_locations:
-                    view[y, x, 0] = 0
-                    view[y, x, 1] = 255
-                    view[y, x, 2] = 0
+                    view[y, x, 0] = 60
+                    view[y, x, 1] = 179
+                    view[y, x, 2] = 113
                 else:
                     view[y, x, 0] = 165
                     view[y, x, 1] = 42
