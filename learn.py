@@ -19,6 +19,12 @@ from docopt import docopt
 from ai.genetic_loop import Genetic
 
 
+def print_generation(generation):
+    for game, value in sorted(generation, key=lambda x: x[1]):
+        print('[{v}]'.format(v=value),
+              ' '.join(['{x},{y}:{t}'.format(x=x, y=y, t=tower_type)
+                        for (x, y), tower_type in game.items()]))
+
 def run():
     """Run a genetic algorithm of games."""
     arguments = docopt(__doc__)
@@ -43,7 +49,7 @@ def run():
         print('saving generations data to:', save_generations_to)
 
     genetic = Genetic()
-    last_generation = genetic.loop(
+    last_generation, elites = genetic.loop(
         initial_games=genetic.random_generation(pop_size, towers_per_game),
         mutation_factor=mutation_factor,
         n_games=pop_size,
@@ -51,10 +57,13 @@ def run():
         save_generations_to=save_generations_to,
         elite_games_count=elite_count,
     )
-    for game, value in sorted(last_generation, key=lambda x: x[1]):
-        print('[{v}]'.format(v=value),
-              ' '.join(['{x},{y}:{t}'.format(x=x, y=y, t=tower_type)
-                        for (x, y), tower_type in game.items()]))
+
+    print()
+    print('Last generation:')
+    print_generation(last_generation)
+    if elite_count:
+        print('Best games:')
+        print_generation(elites)
 
 
 if __name__ == '__main__':

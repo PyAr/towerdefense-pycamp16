@@ -135,7 +135,7 @@ class Genetic:
                 self.save_generation(current_games)
 
             if iterations == max_iterations:
-                return current_games
+                return current_games, elite_games
 
             childs = []
             for _ in range(int(n_games / 2)):
