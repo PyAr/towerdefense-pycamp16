@@ -22,10 +22,18 @@ HORIZ_UNIT = HORIZ_RES // 100
 
 DAMAGE_LIMIT = 80
 
-# load tower image
-img_tower = pyglet.resource.image('tower.png')
-img_tower.anchor_x = img_tower.width // 2
-img_tower.anchor_y = img_tower.height // 2 - 11
+# load tower images
+def load_tower(image_path):
+    img_tower = pyglet.resource.image(image_path)
+    img_tower.anchor_x = img_tower.width // 2
+    img_tower.anchor_y = img_tower.height // 2 - 11
+    return img_tower
+
+tower_images = {
+        'Comunacha': load_tower('tower.png'),
+        'Indecisa': load_tower('tower-indecisa.png'),
+        'Bully': load_tower('tower-bully.png'),
+}
 
 img_deaths = []
 for n in range(3):
@@ -97,12 +105,18 @@ def on_draw():
     pyglet.gl.glLineWidth(2)
 
     for tower in _drawables.towers:
-        sprite = _paint_sprite(img_tower, tower.position)
+        tower_image = tower_images.get(
+                    tower.__class__.__name__,
+                    tower_images['Comunacha']
+                    )
+        sprite = _paint_sprite(
+                tower_image,
+                tower.position)
         label = pyglet.text.Label(
             str(tower.__class__.__name__),
             font_name='Times New Roman',
             font_size=11,
-            x=sprite.x, y=sprite.y - img_tower.anchor_y,
+            x=sprite.x, y=sprite.y - tower_image.anchor_y,
             anchor_x='left', anchor_y='top')
         label.draw()
 
