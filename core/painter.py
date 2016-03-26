@@ -1,28 +1,34 @@
 #!/usr/bin/python3
 # coding: utf8
 import pyglet 
-import os, glob
+import os, glob, sys
 
 pyglet.clock.set_fps_limit(60)
 
-
+#set images paths
 pyglet.resource.path = ['media/images']
 pyglet.resource.reindex()
-img_tower = pyglet.resource.image('tower.png')
-img_tower.anchor_x = img_tower.width//2
-img_tower.anchor_y = img_tower.height//2
+#load bitmaps to the boardbitmap
 img_grass = pyglet.resource.image('grass.png')
 img_route = pyglet.resource.image('route.png')
+
+#calculate field pixel resolution
 HORIZ_RES = 5 * img_grass.width
 VERT_RES = 5 * img_grass.height
-
+#calculate lenght in pixels of units in game
 VERT_UNIT = VERT_RES // 100
 HORIZ_UNIT = HORIZ_RES // 100
 
 DAMAGE_LIMIT = 80
 
+#load tower image
+img_tower = pyglet.resource.image('tower.png')
+img_tower.anchor_x = img_tower.width//2
+img_tower.anchor_y = img_tower.height//2
 
 
+
+#creates a dict of images of monsters
 IMG_MONSTERS = {}
 for filename in glob.glob("media/images/monster*.png"):
     filename = os.path.split(filename)[1]
@@ -40,6 +46,7 @@ for filename in glob.glob("media/images/monster*.png"):
 game_window = None       
 
 class Drawables():
+    'to store the objects on the screen'
     board=[]
     towers=[]
     monsters=[]
@@ -49,6 +56,8 @@ class Drawables():
 _drawables = Drawables()
 
 def draw_field(board,towers):
+    '''to draw the board and towers
+    '''
     global game_window
 
     _drawables.board = board
@@ -56,12 +65,20 @@ def draw_field(board,towers):
     game_window = pyglet.window.Window(HORIZ_RES, VERT_RES)
 
     game_window.push_handlers(on_draw)
+    game_window.push_handlers(on_close)
     _refresh()
 
 def draw(monsters,score):
+    '''to draw dynamic objecs: monsters 
+    and score
+    '''
     _drawables.monsters = monsters
     _drawables.score = score
     _refresh()
+    
+def on_close():
+    game_window.has_exit=True
+    game_window.close()
     
 def on_draw():
     _paint_background()
@@ -72,8 +89,8 @@ def on_draw():
                           str(tower.__class__.__name__),
                           font_name='Times New Roman',
                           font_size=11,
-                          x=sprite.x+img_tower.anchor_x, y=sprite.y,
-                          anchor_x='center', anchor_y='top')
+                          x=sprite.x, y=sprite.y-img_tower.anchor_y,
+                          anchor_x='left', anchor_y='top')
         label.draw()
 
     for monster in _drawables.monsters:
@@ -118,9 +135,11 @@ def _paint_sprite(img, pos):
    
 def _refresh():
     pyglet.clock.tick()
-    game_window.dispatch_events()
-    game_window.dispatch_event('on_draw')
-    game_window.flip()
-
+    if not game_window.has_exit:
+        game_window.dispatch_events()
+        game_window.dispatch_event('on_draw')
+        game_window.flip()
+    else:
+        sys.exit()
 
 
